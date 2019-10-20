@@ -2,13 +2,11 @@ import Album from "./album";
 import Artist from "./artist";
 import Genre from "./genre";
 import User from "./user";
-import SongModel from "../model/song";
-import * as Knex from "knex";
-import Entity from "./entity";
+import {App} from "../app";
 
-export default class Song extends Entity implements SongModel{
+export default class Song{
     static TABLE: string = "songs";
-    addedby: string;
+    userID: string;
     albumID: string;
     artistID: string;
     duration: number;
@@ -19,21 +17,46 @@ export default class Song extends Entity implements SongModel{
     path: string;
     timestamp: Date;
     title: string;
-    private static queryBuilder: Knex.QueryBuilder = new Knex.QueryBuilder();
+
+    private album: Album;
+    private artist: Artist;
+    private genre: Genre;
+    private user: User;
 
 
-    static async getSongFromID(id: int): Promise<Song>{
-        const query = await (this.queryBuilder.select().from(this.TABLE).limit(1)) as Song[];
+    constructor(obj){
+        this.userID = obj.addedby;
+        this.albumID = obj.album;
+        this.artistID = obj.artist;
+        this.duration = obj.duration;
+        this.genreID = obj.genre;
+        this.hash = obj.hash;
+        this.id = obj.id;
+        this.mbid = obj.mbid;
+        this.path = obj.path;
+        this.timestamp = obj.timestamp;
+        this.title = obj.title;
+    }
 
-        return query[0];
+    static async create(id: String): Promise<Song>{
+        const query = await (App.getDB().select().where({id}).from(this.TABLE).limit(1));
+        if(!query[0])
+            return null;
+        return new Song(query[0]);
     }
 
     async getAlbum(): Promise<Album>{
-        return null
+        if(this.album)
+            return this.album;
+        return this.album = await Album.create(this.albumID);
     }
+
     async getArtist(): Promise<Artist>{
-        return null
+        if(this.artist)
+            return this.artist;
+        return this.artist = await Artist.create(this.artistID);
     }
+
     async getGenre(): Promise<Genre> {
         return null;
     }
