@@ -1,8 +1,8 @@
 import Album from "./album";
 import Artist from "./artist";
 import Genre from "./genre";
-import User from "./user";
 import {App} from "../app";
+import User from "./user";
 
 export default class Song{
     static TABLE: string = "songs";
@@ -21,7 +21,7 @@ export default class Song{
     private album: Album;
     private artist: Artist;
     private genre: Genre;
-    private user: User;
+    private owner: User;
 
 
     constructor(obj){
@@ -58,11 +58,17 @@ export default class Song{
     }
 
     async getGenre(): Promise<Genre> {
-        return null;
+        if(this.genre)
+            return this.genre;
+        return Genre.create(this.genreID);
     }
-    async getUser(): Promise<User> {
-        return null;
+
+    async getOwner(): Promise<User> {
+        if(this.owner)
+            return this.owner;
+        return User.create(this.userID);
     }
+
     async getTotalPlays(user: User = null): Promise<Number>{
         return null;
     }

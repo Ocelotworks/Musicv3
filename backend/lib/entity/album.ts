@@ -8,6 +8,8 @@ export default class Album{
     artistID: string;
     name: string;
 
+    private artist: Artist;
+
 
     constructor(obj){
         this.id = obj.id;
@@ -28,7 +30,9 @@ export default class Album{
     }
 
     async getArtist(): Promise<Artist> {
-        return null;
+        if(this.artist)
+            return this.artist;
+        return this.artist = await Artist.create(this.artistID);
     }
 
     async getSongs(): Promise<Song[]>{
