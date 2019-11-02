@@ -3,6 +3,7 @@ import * as bodyParser from "body-parser";
 import Song from "./entity/song";
 import * as Knex from "knex";
 import Album from "./entity/album";
+import Base from "./routes/base";
 
 export class App {
 
@@ -12,13 +13,11 @@ export class App {
     constructor() {
         this.app = express();
         this.config();
-
-        (async function() {
-            let song: Song = await Song.create("e62744c3-8e74-40be-aad0-20c16b250142");
-            let album: Album = await song.getAlbum();
-            let songs = await album.getSongs();
-            console.log(songs);
-        })();
+        try {
+            require('source-map-support').install();
+        }catch(e){
+            console.log(e);
+        }
     }
 
     private config(): void{
@@ -27,7 +26,12 @@ export class App {
         //support application/x-www-form-urlencoded post data
         this.app.use(bodyParser.urlencoded({ extended: false }));
 
+        new Base(this, this.app);
+
         this.app.use(express.static('../frontend'));
+
+        this.app.listen(3000);
+
     }
 
     public static getDB(): Knex{
