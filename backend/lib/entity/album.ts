@@ -24,6 +24,13 @@ export default class Album{
         return new Album(query[0]);
     }
 
+    static async getAll(page: number, albumsPerPage: number = 50): Promise<Album[]>{
+        let query = App.getDB().select("id", "artist", "name").from(Album.TABLE);
+        if(page && page > 0)
+            query = query.offset(page*albumsPerPage).limit(albumsPerPage);
+        return (await query).map((obj)=>new Album(obj));
+    }
+
     async getImage(): Promise<object> {
         const query = await (App.getDB().select("image").where({id: this.id}).from(Album.TABLE).limit(1));
         return query[0].image;
