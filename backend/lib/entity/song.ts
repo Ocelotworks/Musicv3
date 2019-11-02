@@ -25,6 +25,7 @@ export default class Song{
 
 
     constructor(obj){
+        Object.defineProperty(this, 'path', {value: 'static', writable: true}); //Hide path from JSON
         this.userID = obj.addedby;
         this.albumID = obj.album;
         this.artistID = obj.artist;
@@ -36,6 +37,14 @@ export default class Song{
         this.path = obj.path;
         this.timestamp = obj.timestamp;
         this.title = obj.title;
+
+    }
+
+    static async getAll(page: number, songsPerPage: number = 50): Promise<Song[]>{
+        let query = App.getDB().select().from(Song.TABLE);
+        if(page)
+            query = query.offset(page*songsPerPage).limit(songsPerPage);
+        return (await query).map((obj)=>new Song(obj));
     }
 
     static async create(id: String): Promise<Song>{
