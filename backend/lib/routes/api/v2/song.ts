@@ -14,10 +14,10 @@ export default class Songs extends Route {
             res.sendFile(res.locals.song.path);
         });
 
-        this.router.get('/:id/album', Middleware.getValidEntity(Song), (req, res)=>res.redirect('/api/v2/album/'+res.locals.song.albumID));
+        this.router.get('/:id/album',  Middleware.getValidEntity(Song), (req, res)=>res.redirect('/api/v2/album/'+res.locals.song.albumID));
         this.router.get('/:id/artist', Middleware.getValidEntity(Song), (req, res)=>res.redirect('/api/v2/artist/'+res.locals.song.artistID));
-        this.router.get('/:id/genre', Middleware.getValidEntity(Song), (req, res)=>res.redirect('/api/v2/genre/'+res.locals.song.genreID));
-        this.router.get('/:id/owner', Middleware.getValidEntity(Song), (req, res)=>res.redirect('/api/v2/user/'+res.locals.song.userID));
+        this.router.get('/:id/genre',  Middleware.getValidEntity(Song), (req, res)=>res.redirect('/api/v2/genre/'+res.locals.song.genreID));
+        this.router.get('/:id/owner',  Middleware.getValidEntity(Song), (req, res)=>res.redirect('/api/v2/user/'+res.locals.song.userID));
     }
 
     getBase(): string {

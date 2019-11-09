@@ -41,6 +41,13 @@ export default class User {
         return new User(query[0]);
     }
 
+    static async getFromApiKey(key: String): Promise<User>{
+        const query = await (App.getDB().select().from("api_keys").where({'api_keys.id': key, revoked: 0}).limit(1).innerJoin(User.TABLE, "owner", User.TABLE+".id"));
+        if(!query[0])
+            return null;
+        return new User(query[0]);
+    }
+
     async getSongs(): Promise<Song[]> {
         const query = await (App.getDB().select().where({addedby: this.id}).from(Song.TABLE));
         return query.map((obj)=>new Song(obj));
@@ -63,6 +70,7 @@ export enum ShuffleMode {
 
 export enum UserLevel {
     BANNED = -1,
+    GUEST,
     USER,
     MODERATOR,
     ADMIN,

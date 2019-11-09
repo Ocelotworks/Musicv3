@@ -21,7 +21,7 @@ export default class Artists extends Route {
         });
 
         this.router.get('/:id/albums', Middleware.getValidEntity(Artist), async (req, res)=>res.json(await res.locals.artist.getAlbums()));
-        this.router.get('/:id/songs', Middleware.getValidEntity(Artist), async (req, res)=>res.json(await res.locals.artist.getSongs()));
+        this.router.get('/:id/songs',  Middleware.getValidEntity(Artist), async (req, res)=>res.json(await res.locals.artist.getSongs()));
     }
 
     getBase(): string {

@@ -1,5 +1,6 @@
 import {Route} from "./route";
 import v2 from "./api/v2";
+import Middleware from "../middleware/Middleware";
 
 export default class API extends Route {
     createRoutes() {
