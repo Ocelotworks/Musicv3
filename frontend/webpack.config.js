@@ -1,5 +1,13 @@
 const HtmlWebPackPlugin = require("html-webpack-plugin");
+const MiniCssExtractPlugin = require('mini-css-extract-plugin');
+const path = require('path');
+const isProd = false;
 module.exports = {
+    output: {
+        path: path.join(process.cwd(), 'dist'),
+        filename: '[name].[chunkhash].js',
+        crossOriginLoading: false,
+    },
     module: {
         rules: [
             {
@@ -19,31 +27,41 @@ module.exports = {
             },
             {
                 test: /\.scss$/,
-                use: [
+                loader: [
+                    MiniCssExtractPlugin.loader,
                     {
-                        loader: 'file-loader',
+                        loader: 'css-loader',
                         options: {
-                            name: 'bundle.css',
+                            modules: {
+                                mode: 'global',
+                                localIdentName: isProd
+                                    ? '[hash:base64:5]'
+                                    : '[path][name]__[local]--[hash:base64:5]',
+                            },
                         },
                     },
-                    { loader: 'extract-loader' },
-                    { loader: 'css-loader' },
                     {
                         loader: 'sass-loader',
                         options: {
                             sassOptions: {
-                                includePaths: ['./node_modules']
+                                includePaths: ['./node_modules'],
                             }
-                        }
+                        },
                     },
-                ]
-            }
+                ],
+            },
         ]
     },
     plugins: [
+        new MiniCssExtractPlugin({
+            filename: '[name].[hash].css',
+            chunkFilename: '[id].[hash].css',
+        }),
         new HtmlWebPackPlugin({
             template: "./src/index.html",
-            filename: "./index.html"
+            filename: "./index.html",
+            minify: isProd,
+            hash: true,
         })
     ]
 };
