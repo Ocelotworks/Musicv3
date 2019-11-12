@@ -23,7 +23,7 @@ export const TopBar = () => (
                             />
                         </TopAppBarIcon>
                         <TopAppBarTitle className='title'>
-                            Material Components React
+                            Petify
                         </TopAppBarTitle>
                     </TopAppBarSection>
                     <TopAppBarSection align='end'>

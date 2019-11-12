@@ -4,7 +4,7 @@ $mdc-theme-secondary: #1ed760;
 $mdc-theme-background: #191919;
 $mdc-theme-surface: #292929;
 $mdc-theme-text-primary-on-background: blue;
-
+$mdc-theme-icon-button-on: $mdc-theme-secondary;
 
 
 
@@ -74,3 +74,4 @@ a {
 @import "~@material/react-layout-grid/index";
 @import '~@material/react-material-icon/index';
 @import '~@material/react-top-app-bar/index';
+@import '~@material/react-icon-button/index';

@@ -6,6 +6,7 @@ import MaterialIcon from '@material/react-material-icon';
 import List, {ListItem, ListItemGraphic, ListItemText} from '@material/react-list';
 import {TopBar} from "./TopBar.jsx";
 import {Content} from "./Content.jsx";
+import {Player} from "./Player.jsx";
 require('../../../css/Menu.scss');
 
 export const Menu = () => (
@@ -16,12 +17,7 @@ export const Menu = () => (
                 <TopAppBarFixedAdjust className='top-app-bar-fix-adjust'>
                     <Drawer dismissible open={isOpen}>
                         <DrawerContent>
-                            <List singleSelection selectedIndex={selectedIndex}>
-                                <ListItem>
-                                    <ListItemGraphic graphic={<MaterialIcon icon='folder'/>} />
-                                    <ListItemText primaryText='Mail' />
-                                </ListItem>
-                            </List>
+                           <Player/>
                         </DrawerContent>
                     </Drawer>
                     <DrawerAppContent className='drawer-app-content'>

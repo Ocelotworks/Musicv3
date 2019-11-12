@@ -1,7 +1,7 @@
 import React from 'react';
 
 export const MenuContext = React.createContext({
-    isOpen: false,
+    isOpen: true,
     selectedIndex: 0,
     setOpen: (_open) => {},
     setSelectedIndex: (_selectedIndex) => {},
@@ -16,9 +16,19 @@ export const UserContext = React.createContext({
 export const PlayerContext = React.createContext({
     song: {
         id: '',
-        album: 'https://placekitten.com/400/400',
+        album: {
+            id: '',
+            name: 'An Album',
+            url: 'https://placekitten.com/400/400',
+        },
         title: 'A Song',
         artist: 'An Artist'
     },
-    account: '',
+    playing: false,
+    shuffle: true,
+    autoplay: true,
+    loop: 0,
+    next: function(){},
+    prev: function(){},
+    elapsed: 100,
 });
