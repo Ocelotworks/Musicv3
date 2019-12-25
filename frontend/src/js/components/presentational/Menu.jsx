@@ -1,13 +1,9 @@
 import {MenuContext} from '../Context.jsx';
 import React from 'react';
-import TopAppBar, {TopAppBarFixedAdjust} from '@material/react-top-app-bar';
-import Drawer, {DrawerAppContent, DrawerContent, DrawerHeader, DrawerTitle} from '@material/react-drawer';
-import MaterialIcon from '@material/react-material-icon';
-import List, {ListItem, ListItemGraphic, ListItemText} from '@material/react-list';
 import {TopBar} from "./TopBar.jsx";
 import {Content} from "./Content.jsx";
 import {Player} from "./Player.jsx";
-require('../../../css/Menu.scss');
+import {Drawer, DrawerContent, DrawerAppContent, TopAppBarFixedAdjust} from 'rmwc';
 
 export const Menu = () => (
     <MenuContext.Consumer>

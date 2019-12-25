@@ -13,7 +13,7 @@ export default class Album{
 
     constructor(obj){
         this.id = obj.id;
-        this.artistID = obj.id;
+        this.artistID = obj.artistID;
         this.name = obj.name;
     }
 

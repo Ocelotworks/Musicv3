@@ -1,3 +1,4 @@
+
 // theme
 $mdc-theme-primary: #222;
 $mdc-theme-secondary: #1ed760;
@@ -7,8 +8,14 @@ $mdc-theme-text-primary-on-background: blue;
 $mdc-theme-icon-button-on: $mdc-theme-secondary;
 
 
-
-
+/**
+ I fucking hate frontend development!!!
+ */
+:root {
+  --mdc-theme-primary: #222;
+  --mdc-theme-secondary: #1ed760;
+}
+@import "~material-components-web/dist/material-components-web.min.css";
 
 // reset css
 html, body, div, span, applet, object, iframe,
@@ -60,18 +67,23 @@ a {
   text-decoration: none;
 }
 
+.mdc-drawer__content {
+  background: #1f1f1f;
+}
+
+aside.mdc-drawer--open.mdc-drawer.mdc-drawer--dismissible {
+  background: #2e2e2e;
+}
+
+.mdc-icon-button--on .mdc-icon-button__icon.mdc-icon-button__icon--on{
+  display: inline-block;
+  color: $mdc-theme-secondary;
+}
 
 
+.mdc-icon-button__icon.mdc-icon-button__icon--on {
+  display: inline-block;
+  color: grey;
+}
 
-@import "~@material/react-checkbox/index";
-@import "~@material/react-drawer/index";
-@import '~@material/react-fab/index';
-@import "~@material/react-list/index";
-@import "~@material/react-radio/index";
-@import "~@material/react-snackbar/index";
-@import "~@material/react-menu/index";
-@import "~@material/react-menu-surface/index";
-@import "~@material/react-layout-grid/index";
-@import '~@material/react-material-icon/index';
-@import '~@material/react-top-app-bar/index';
-@import '~@material/react-icon-button/index';
+

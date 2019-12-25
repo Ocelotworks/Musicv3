@@ -1,12 +1,7 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
-import {TopBar} from "../presentational/TopBar.jsx";
 import {MenuContext, UserContext} from "../Context.jsx";
 import {Menu} from "../presentational/Menu.jsx";
-import {Content} from "../presentational/Content.jsx";
-import Fab from '@material/react-fab';
-import MaterialIcon from '@material/react-material-icon';
-import {Snackbar} from '@material/react-snackbar';
 
 class App extends React.Component {
 
@@ -56,11 +51,6 @@ class App extends React.Component {
                     }}
                 >
                     <Menu />
-                    <Snackbar
-                        timeoutMs={10000}
-                        message='You became a programmer!'
-                        actionText='dismiss'
-                    />
                 </UserContext.Provider>
             </MenuContext.Provider>
         );
