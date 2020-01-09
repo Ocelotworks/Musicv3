@@ -1,0 +1,38 @@
+div#topBar {
+    position: sticky;
+    height: 5.5vh;
+    background: #222;
+    border-bottom: 1px solid #141415;
+    color: #efefef;
+    display: flex;
+}
+
+#topBar * {
+    margin: auto 0;
+}
+
+#topBar span {
+    align-self: flex-start;
+    vertical-align: middle;
+    display: inline-block;
+    padding-left: 15px;
+}
+
+#topBarUserContainer {
+    align-self: flex-end;
+    position: absolute;
+    right: 0;
+    height: 100%;
+    background: transparent;
+    cursor: pointer;
+    padding-right: 15px;
+    transition: background 0.3s;
+}
+
+#topBarUserContainer .user {
+    margin-top: 1.25vh;
+}
+
+#topBarUserContainer:hover {
+    background: rgba(0,0,0,0.5);
+}

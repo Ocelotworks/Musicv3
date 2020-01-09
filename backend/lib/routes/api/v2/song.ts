@@ -6,6 +6,7 @@ export default class Songs extends Route {
 
     createRoutes() {
         this.router.get("/", async (req, res)=> res.json(await Song.getAll(req.query.page)));
+        this.router.get("/latest", async (req, res)=> res.json(await Song.getLastAdded()));
 
         this.router.get('/:id', Middleware.getValidEntity(Song), (req, res)=>res.json(res.locals.song));
 

@@ -14,5 +14,8 @@
   "license": "ISC",
   "devDependencies": {
     "source-map-support": "^0.5.16"
+  },
+  "dependencies": {
+    "cors": "latest"
   }
 }

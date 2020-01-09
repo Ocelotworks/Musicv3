@@ -1,8 +1,7 @@
 import * as express from "express";
 import * as bodyParser from "body-parser";
-import Song from "./entity/song";
+import * as cors from 'cors';
 import * as Knex from "knex";
-import Album from "./entity/album";
 import Base from "./routes/base";
 
 export class App {
@@ -21,6 +20,8 @@ export class App {
     }
 
     private config(): void{
+        this.app.use(cors());
+
         // support application/json type post data
         this.app.use(bodyParser.json());
         //support application/x-www-form-urlencoded post data
@@ -29,6 +30,11 @@ export class App {
         new Base(this, this.app);
 
         this.app.use(express.static('../frontend'));
+
+        this.app.use(function(err, req, res, next){
+            res.status(500).json(err);
+            console.log(err.stack);
+        });
 
         this.app.listen(3000);
 

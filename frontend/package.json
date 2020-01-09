@@ -1,50 +1,34 @@
 {
-  "name": "petify-frontend",
-  "version": "3.0.0",
-  "description": "",
-  "main": "index.js",
-  "scripts": {
-    "start": "webpack-dev-server --open --mode development",
-    "build": "webpack --mode production"
-  },
-  "keywords": [],
-  "author": "Peter Maguire",
-  "license": "ISC",
-  "devDependencies": {
-    "@babel/core": "^7.7.7",
-    "@babel/plugin-proposal-class-properties": "^7.7.4",
-    "@babel/preset-env": "^7.7.7",
-    "@babel/preset-react": "^7.7.4",
-    "babel-loader": "^8.0.6",
-    "css-loader": "^3.4.0",
-    "extract-loader": "^3.1.0",
-    "file-loader": "^4.3.0",
-    "html-loader": "^0.5.5",
-    "html-webpack-plugin": "^3.2.0",
-    "mini-css-extract-plugin": "^0.8.2",
-    "node-sass": "^4.13.0",
-    "sass-loader": "^8.0.0",
-    "style-loader": "^1.1.1",
-    "webpack": "^4.41.4",
-    "webpack-cli": "^3.3.10",
-    "webpack-dev-server": "^3.10.1"
-  },
+  "name": "frontend",
+  "version": "0.1.0",
+  "private": true,
   "dependencies": {
-    "@material/button": "^4.0.0",
-    "@material/checkbox": "^4.0.0",
-    "@material/data-table": "^4.0.0",
-    "@material/list": "^4.0.0",
-    "@material/react-icon-button": "^0.15.0",
-    "@material/react-layout-grid": "^0.15.0",
-    "@material/react-material-icon": "^0.15.0",
-    "@material/react-top-app-bar": "^0.15.0",
-    "@material/tab": "^4.0.0",
-    "@material/tab-indicator": "^4.0.0",
-    "@material/theme": "^4.0.0",
-    "@material/top-app-bar": "^4.0.0",
-    "i": "^0.3.6",
+    "@testing-library/jest-dom": "^4.2.4",
+    "@testing-library/react": "^9.3.2",
+    "@testing-library/user-event": "^7.1.2",
     "react": "^16.12.0",
     "react-dom": "^16.12.0",
-    "rmwc": "^5.7.2"
+    "react-scripts": "3.3.0"
+  },
+  "scripts": {
+    "start": "react-scripts start",
+    "build": "react-scripts build",
+    "test": "react-scripts test",
+    "eject": "react-scripts eject"
+  },
+  "eslintConfig": {
+    "extends": "react-app"
+  },
+  "browserslist": {
+    "production": [
+      ">0.2%",
+      "not dead",
+      "not op_mini all"
+    ],
+    "development": [
+      "last 1 chrome version",
+      "last 1 firefox version",
+      "last 1 safari version"
+    ]
   }
 }
