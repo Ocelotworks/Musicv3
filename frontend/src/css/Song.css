@@ -1,0 +1,31 @@
+.song {
+    list-style: none;
+    display: block;
+    text-align: left;
+    padding: 10px 5px;
+    background: rgba(0, 0, 0, 0.2);
+    transition: background 0.2s;
+}
+
+.song:not(:disabled){
+    cursor: pointer;
+}
+
+.song:hover{
+    background: rgba(0, 0, 0, 0.4);
+    transition: background 0.2s;
+}
+
+.songList .song:nth-of-type(odd):hover{
+    background: rgba(0, 0, 0, 0.3);
+    transition: background 0.2s;
+}
+
+.songList .song:nth-of-type(odd){
+    background: rgba(0, 0, 0, 0.1);
+}
+
+.songList {
+    padding: 0;
+    margin-top: 0;
+}

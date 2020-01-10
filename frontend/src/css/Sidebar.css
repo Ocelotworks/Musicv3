@@ -1,0 +1,114 @@
+#sideBar {
+    display: flex;
+    flex-direction: column;
+    width: 14vw;
+    position: fixed;
+    background: #222;
+    border-right: 1px solid #141415;
+    height: calc(99% - 5.5vh);
+    box-shadow: 5px 1px 11px 0 rgba(0,0,0,0.3);
+    z-index: 5;
+    padding-top: 10px;
+}
+
+#sideBar .sidebarElement {
+    width: 100%;
+    margin-top: 10px;
+}
+
+.sidebarElement .albumArt {
+    width: 85%;
+    border: 1px solid black;
+}
+
+.nowPlayingSong {
+    font-size: 24px;
+}
+
+.nowPlayingArtist {
+    color: #636363;
+}
+
+#controls, #queue {
+    background: #292929;
+    width: 90% !important;
+    margin: 0 auto;
+    border: 1px solid #404040;
+    padding: 10px 5px;
+}
+
+#controls svg {
+    cursor: pointer;
+    transition: color 0.3s;
+}
+
+#primaryControls {
+    color: #9e9e9e;
+}
+
+#primaryControls svg {
+    font-size: 3.5em;
+}
+
+#primaryControls svg:hover {
+    color: #efefef;
+}
+
+#secondaryControls {
+    color: #565656;
+}
+
+#secondaryControls svg.enabled {
+    color: #1ed760;
+}
+
+#secondaryControls svg.enabled:hover {
+    color: #21ff6f;
+}
+
+#secondaryControls svg:hover {
+    color: #1da653;
+}
+
+#trackProgress {
+    width: 85% !important;
+    margin: 0 auto;
+}
+
+#queue {
+    flex-grow: 1;
+    margin-bottom: 15px;
+    padding: 0;
+}
+
+#queueHeader {
+    background: #141414;
+    height: 36px;
+    position: relative;
+    border-bottom: 1px solid black;
+}
+
+#queueHeader span {
+    display: inline-block;
+    margin: auto;
+    width: 50%;
+    padding-top: 5px;
+}
+
+#queueHeader div {
+    position: absolute;
+    right: 0;
+    display: inline;
+    padding-top: 5px;
+    color: #494949;
+}
+
+#queueHeader div svg {
+    cursor: pointer;
+    transition: color 0.3s;
+}
+
+#queueHeader div svg:hover {
+    color: #1da653;
+    transition: color 0.3s;
+}
