@@ -41,3 +41,9 @@ export const PlayerContext = React.createContext({
         nextTrack: ()=>null
     },
 });
+
+export const HomeContext = React.createContext({
+    recommended: [],
+    recent: [],
+    loading: true,
+});
