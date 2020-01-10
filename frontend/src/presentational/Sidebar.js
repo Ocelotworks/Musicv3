@@ -127,8 +127,8 @@ export default function(){
                         <div id="queueHeader">
                             <span>Queue ({player.data.queue.length})</span>
                             <div>
-                                <PlaylistAdd/>
-                                <Delete/>
+                                <PlaylistAdd onClick={player.control.saveQueue}/>
+                                <Delete onClick={player.control.clearQueue}/>
                             </div>
                         </div>
                         <ul className="songList">

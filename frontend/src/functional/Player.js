@@ -75,7 +75,9 @@ export default class Player extends React.Component {
             toggleCasting: this.toggleValue("casting"),
             setRepeat: ()=>this.setState({repeat: (this.state.repeat + 1) % 3}),
             previousTrack: ()=>null,
-            nextTrack: ()=>null
+            nextTrack: ()=>null,
+            clearQueue: ()=>this.setState({queue:[]}),
+            saveQueue: ()=>null,
         }
     }
 

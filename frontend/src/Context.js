@@ -38,7 +38,9 @@ export const PlayerContext = React.createContext({
         toggleCasting: ()=>null,
         setRepeat: ()=>null,
         previousTrack: ()=>null,
-        nextTrack: ()=>null
+        nextTrack: ()=>null,
+        clearQueue: ()=>null,
+        saveQueue: ()=>null,
     },
 });
 
