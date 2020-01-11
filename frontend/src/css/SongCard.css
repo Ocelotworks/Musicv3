@@ -1,0 +1,37 @@
+.songCard img {
+    display: block;
+    width: 100%;
+}
+
+.songCard span {
+    position: absolute;
+    bottom: 0;
+    padding-left: 5px;
+    padding-bottom: 5px;
+    width: calc(100% - 5px);
+    background-image: linear-gradient(transparent 1%, black);
+    padding-top: 10px;
+    transition: 0.3s;
+    text-overflow: ellipsis;
+    overflow: hidden;
+}
+
+.songCard {
+    position: relative;
+    cursor: pointer;
+    border: 1px solid black;
+    transition: border 0.3s;
+    width: 225px;
+    height: 225px;
+}
+
+.songCard:hover {
+    border: 1px solid #262626;
+    transition: border 0.3s;
+}
+
+.songCard:hover span {
+    padding-bottom: 10px;
+    padding-top: 15px;
+    transition: 0.3s;
+}

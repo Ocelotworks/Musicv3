@@ -9,16 +9,7 @@ import React from 'react';
 
 export const PlayerContext = React.createContext({
     data: {
-        song : {
-            id: "",
-            albumID: "",
-            name: "Nothing",
-            artist: {
-                name: "Nobody",
-                id: ""
-            },
-            length: 120,
-        },
+        song : null,
         volume: 100,
         elapsed: 0,
         playing: false,
@@ -26,7 +17,9 @@ export const PlayerContext = React.createContext({
         autoplay: true,
         shuffle: true,
         casting: false,
+        castConnected: false,
         repeat: 0,
+        repeatNow: false,
         queue: [],
     },
     control: {
@@ -41,6 +34,9 @@ export const PlayerContext = React.createContext({
         nextTrack: ()=>null,
         clearQueue: ()=>null,
         saveQueue: ()=>null,
+        playTrack: ()=>console.log("oh no"),
+        addToQueue: ()=>null,
+        queueNext: ()=>null,
     },
 });
 

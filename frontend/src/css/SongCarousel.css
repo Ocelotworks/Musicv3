@@ -1,0 +1,22 @@
+.songCarousel {
+    display: flex;
+    padding: 10px;
+    flex-wrap: wrap;
+}
+
+.songCarousel .songCard, .songCarousel .songCardLoading {
+    margin-right: 15px;
+    margin-bottom: 15px;
+}
+.songCarousel svg {
+    font-size: 75px;
+    height: 100%;
+    margin:  auto;
+    cursor: pointer;
+    transition: color 0.3s;
+}
+
+.songCarousel svg:hover {
+    color: #1ed760;
+    transition: color 0.3s;
+}

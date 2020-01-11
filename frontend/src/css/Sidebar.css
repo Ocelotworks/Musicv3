@@ -23,10 +23,13 @@
 
 .nowPlayingSong {
     font-size: 24px;
+    margin-bottom: 5px;
 }
 
 .nowPlayingArtist {
     color: #636363;
+    margin-top: 5px !important;
+    font-size: 20px;
 }
 
 #controls, #queue {
@@ -79,6 +82,7 @@
     flex-grow: 1;
     margin-bottom: 15px;
     padding: 0;
+    overflow-y: hidden;
 }
 
 #queueHeader {
@@ -111,4 +115,20 @@
 #queueHeader div svg:hover {
     color: #1da653;
     transition: color 0.3s;
+}
+
+#queue .songList {
+    overflow-y: auto;
+    height: calc(100% - 36px);
+}
+
+.buffering > .MuiSlider-rail {
+    animation: barberpole 1.5s infinite linear;
+    background: linear-gradient(-45deg, #1da653 25%, #146f38 50%, #1da653 75%);
+    background-size: 27px 27px;
+}
+
+@keyframes barberpole {
+    0% {background-position: 0;}
+    100% {background-position: 53%;}
 }

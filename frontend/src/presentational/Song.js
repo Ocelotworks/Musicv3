@@ -1,5 +1,6 @@
 import React from "react";
 import '../css/Song.css';
+import {ContextMenuTrigger } from "react-contextmenu";
 /**
  *   ╔════   Copyright 2020 Peter Maguire
  *  ║ ════╗  Created 10/01/2020
@@ -8,8 +9,11 @@ import '../css/Song.css';
  */
 
 
-export default function({song}){
-    return (<li className="song">
-        {song.artist.name} - {song.name}
-    </li>)
+export default function({song, contextMenu}){
+
+    return (<ContextMenuTrigger id={contextMenu ? contextMenu : "songContextMenu"}>
+            <li className="song">
+                {song.artist.name} - {song.title}
+            </li>
+    </ContextMenuTrigger>)
 }

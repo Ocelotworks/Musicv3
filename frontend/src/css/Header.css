@@ -14,9 +14,10 @@
 
 #topBar span {
     align-self: flex-start;
-    vertical-align: middle;
+    text-align: left;
     display: inline-block;
     padding-left: 15px;
+    width: 14vw;
 }
 
 #topBarUserContainer {
@@ -36,4 +37,34 @@
 
 #topBarUserContainer:hover {
     background: rgba(0,0,0,0.5);
+}
+
+.navLink {
+    transition: 0.3s;
+    text-decoration: none;
+    color: white;
+    display: inline-block;
+    height: calc(100% - 15px);
+    margin: auto;
+    padding-top: 15px;
+    padding-left: 15px;
+    border-bottom: 1px solid transparent;
+    padding-right: 15px;
+}
+
+.navLink:not(.active):hover {
+    background: rgba(0,0,0,0.25);
+    border-bottom-color: black;
+    transition: 0.3s;
+   color: #1ed760;
+}
+
+.navLink.active{
+    border-bottom-color: #1ed760;
+}
+.navLink div {
+    display: inline;
+    bottom: 6px;
+    position: relative;
+    padding-left: 5px;
 }

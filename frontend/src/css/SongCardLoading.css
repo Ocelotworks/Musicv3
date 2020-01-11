@@ -1,0 +1,36 @@
+
+.songCardLoading div {
+    position: absolute;
+    bottom: 0;
+    padding-left: 5px;
+    padding-bottom: 5px;
+    width: calc(100% - 5px);
+    background-image: linear-gradient(transparent 1%, black);
+    padding-top: 10px;
+    transition: 0.3s;
+    text-overflow: ellipsis;
+    overflow: hidden;
+}
+
+.songCardLoading {
+    position: relative;
+    border: 1px solid black;
+    transition: border 0.3s;
+    width: 225px;
+    height: 225px;
+    background: rgba(0, 0, 0, 0.33);
+    animation: pulse 1.65s infinite linear;
+}
+
+
+@keyframes pulse {
+    0%{background: rgba(0, 0, 0, 0.33);}
+    50%{background: rgba(255, 255, 255, 0.1);}
+    100%{background: rgba(0, 0, 0, 0.33);}
+}
+
+.songCardLoading:nth-of-type(2){animation-delay: 0.15s}
+.songCardLoading:nth-of-type(3){animation-delay: calc(0.15s * 2)}
+.songCardLoading:nth-of-type(4){animation-delay: calc(0.15s * 3)}
+.songCardLoading:nth-of-type(5){animation-delay: calc(0.15s * 4)}
+.songCardLoading:nth-of-type(6){animation-delay: calc(0.15s * 5)}

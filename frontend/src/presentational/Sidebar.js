@@ -17,16 +17,21 @@ import {
     PlayCircleOutlineOutlined,
     Shuffle,
     Cast,
+    CastConnected,
     Delete,
     VolumeDown,
     VolumeUp,
-    PlaylistAdd
+    PlaylistAdd,
+    ArrowDropUp,
+    ArrowDropDown,
+    Info,
 } from '@material-ui/icons';
 import Slider from '@material-ui/core/Slider';
 import {withStyles} from '@material-ui/core/styles';
 import Grid from "@material-ui/core/Grid";
 import {PlayerContext} from "../Context";
 import Song from "./Song";
+import {ContextMenu, MenuItem} from "react-contextmenu";
 
 const TrackSlider = withStyles({
     root: {
@@ -70,6 +75,7 @@ const VolumeSlider = withStyles({
 
 
 function formatTime(totalSeconds){
+    if(isNaN(totalSeconds))return "00:00";
     let hours = Math.floor(totalSeconds / 3600);
     totalSeconds %= 3600;
     let minutes = Math.floor(totalSeconds / 60);
@@ -91,13 +97,13 @@ export default function(){
                 player => (
                 <div id="sideBar">
                     <div className="sidebarElement">
-                        <img className="albumArt" src="https://placekitten.com/1024/1024" alt="Album!"/>
-                        <p className="nowPlayingSong">Nothing</p>
-                        <p className="nowPlayingArtist">Nobody</p>
+                        <img className="albumArt" src={player.data.song && player.data.song.albumID ? `http://localhost:3000/api/v2/album/${player.data.song.albumID}/image` : "http://localhost:3000/img/album.png"} alt={player.data.song.name}/>
+                        <p className="nowPlayingSong">{player.data.song.title || "Nothing"}</p>
+                        <p className="nowPlayingArtist">{player.data.song.artist.name || "Νοbody"}</p>
                     </div>
                     <div className="sidebarElement" id="trackProgress">
                         {formatTime(player.data.elapsed)}/{formatTime(player.data.song.length)}
-                        <TrackSlider value={(player.data.elapsed/player.data.song.length)*100} onChange={player.control.seekTrack}/>
+                        <TrackSlider value={(player.data.elapsed/player.data.song.length)*100} className={player.data.buffering ? "buffering" : ""} onChange={player.control.seekTrack}/>
                     </div>
                     <div className="sidebarElement" id="controls">
                         <div id="primaryControls">
@@ -109,17 +115,17 @@ export default function(){
                             {player.data.repeat === 1 ? <RepeatOne onClick={player.control.setRepeat} className="enabled"/> : <Repeat className={player.data.repeat > 1 ? "enabled" : ""}  onClick={player.control.setRepeat}/>}
                             <PlayCircleOutlineOutlined onClick={player.control.toggleAutoplay} className={player.data.autoplay ? "enabled" : ""}/>
                             <Shuffle onClick={player.control.toggleShuffle} className={player.data.shuffle ? "enabled" : ""}/>
-                            <Cast onClick={player.control.toggleCasting} className={player.data.casting ? "enabled" : ""}/>
+                            {player.data.castConnected ? <CastConnected onClick={player.control.toggleCasting} className="enabled"/> :<Cast onClick={player.control.toggleCasting} className={player.data.casting ? "enabled" : ""}/>}
                         </div>
                         <Grid container spacing={2}>
                             <Grid item>
-                                <VolumeDown />
+                                <VolumeDown onClick={()=>player.control.setVolume(null,0)}/>
                             </Grid>
                             <Grid item xs>
-                                <VolumeSlider defaultValue={player.data.volume} onChange={player.control.setVolume}/>
+                                <VolumeSlider value={player.data.volume} onChange={player.control.setVolume}/>
                             </Grid>
                             <Grid item>
-                                <VolumeUp />
+                                <VolumeUp onClick={()=>player.control.setVolume(null, 100)}/>
                             </Grid>
                         </Grid>
                     </div>
@@ -131,8 +137,22 @@ export default function(){
                                 <Delete onClick={player.control.clearQueue}/>
                             </div>
                         </div>
+                        <ContextMenu id='queueContextMenu'>
+                            <MenuItem data={{foo: 'bar'}}>
+                                <ArrowDropUp/><span>Move to Top</span>
+                            </MenuItem>
+                            <MenuItem data={{foo: 'bar'}} >
+                                <Shuffle/><span>Randomise Position</span>
+                            </MenuItem>
+                            <MenuItem data={{foo: 'bar'}}>
+                                <ArrowDropDown/><span>Move to Bottom</span>
+                            </MenuItem>
+                            <MenuItem data={{foo: 'bar'}}>
+                                <Info/><span>Song Info</span>
+                            </MenuItem>
+                        </ContextMenu>
                         <ul className="songList">
-                            {player.data.queue.map((song)=><Song song={song}/>)}
+                            {player.data.queue.map((song)=><Song song={song} contextMenu='queueContextMenu'/>)}
                         </ul>
                     </div>
                 </div>

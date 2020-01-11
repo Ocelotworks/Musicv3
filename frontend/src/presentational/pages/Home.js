@@ -7,13 +7,20 @@
 
 import React from 'react';
 import {HomeContext} from "../../Context";
+import SongCarousel from "../SongCarousel";
+import SongContextMenu from "../../functional/SongContextMenu";
+import '../../css/Home.css';
 
 export default function(){
     return (
         <HomeContext.Consumer>{
-            home => (
-                <div>Homey home home</div>
-            )
+            home => (<>
+                <SongContextMenu/>
+                <h1>Recommended</h1>
+                <SongCarousel songs={home.recent} class='homeCarousel'/>
+                <h1>Latest Additions</h1>
+                <SongCarousel songs={home.recent} class='homeCarousel'/>
+            </>)
         }</HomeContext.Consumer>
     )
 }

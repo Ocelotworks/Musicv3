@@ -2,3 +2,56 @@
     margin-left: calc(14vw + 1px);
     text-align: left;
 }
+
+.react-contextmenu-item span {
+    bottom: 6px;
+    position: relative;
+}
+
+.react-contextmenu  {
+    background: #141415;
+    border: 1px solid #5a5a5a;
+    z-index: 999;
+    max-width: 1px;
+    max-height: 1px;
+    overflow: hidden;
+    transition: 0.3s;
+    transition-property: max-width, max-height;
+}
+
+.react-contextmenu--visible{
+    max-height: 100%;
+    max-width: 100%;
+    transition: 0.5s;
+    transition-property: max-width, max-height;
+}
+
+.react-contextmenu  svg {
+    padding-right: 7px;
+}
+
+.react-contextmenu-item {
+    text-align: left;
+    padding: 5px;
+    cursor: pointer;
+    transition: background 0.1s;
+}
+
+.react-contextmenu-item:nth-of-type(odd){
+    background: rgba(0,0,0,0.1)
+}
+
+.react-contextmenu-item:nth-of-type(odd):hover{
+    background: rgba(0,0,0,0.5);
+    transition: background 0.1s;
+}
+
+.react-contextmenu-item:hover{
+    background: rgba(0,0,0,0.3);
+    transition: background 0.1s;
+}
+
+.react-contextmenu .react-contextmenu-item:not(:last-of-type){
+    border-bottom: 1px solid #101011;
+
+}
