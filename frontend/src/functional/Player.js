@@ -29,6 +29,7 @@ export default class Player extends React.Component {
         shuffle: true,
         casting: false,
         repeat: 0,
+        repeatNow: false,
         history:[],
         queue: [
             {
