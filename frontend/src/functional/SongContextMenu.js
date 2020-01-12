@@ -18,15 +18,16 @@ import {
 import {PlayerContext} from "../Context";
 import {Redirect} from "react-router";
 
-
 export default class SongContextMenu extends React.Component {
     state = {
        redirect: null,
     };
 
     render() {
-        if (this.state.redirect)
-            return <Redirect to={this.state.redirect}/>
+        if (this.state.redirect) {
+            {this.setState({redirect: null})}
+            return <Redirect push to={this.state.redirect}/>;
+        }
         return (<PlayerContext.Consumer>{(player)=>(
                 <ContextMenu id='songContextMenu'>
                     <MenuItem onClick={(evt,data)=>player.control.addToQueue(data.song)}>
@@ -47,7 +48,7 @@ export default class SongContextMenu extends React.Component {
                     <MenuItem onClick={(event, data)=>this.setState({redirect:`/artist/${data.song.artist.id}`})}>
                         <Person/><span>Go To Artist</span>
                     </MenuItem>
-                    <MenuItem>
+                    <MenuItem onClick={(event, data)=>{player.control.setIsOpen(true, this.props.data.url); this.setState({redirect:`${this.props.data.url}/modal/song/${data.song.id}`})}}>
                         <Info/><span>Song Info</span>
                     </MenuItem>
                 </ContextMenu>

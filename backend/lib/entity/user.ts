@@ -19,6 +19,9 @@ export default class User {
 
 
     constructor(obj){
+        Object.defineProperty(this, 'authKey', {value: 'static', writable: true});
+        Object.defineProperty(this, 'authType', {value: 'static', writable: true});
+        //todo: privacy for this shit
         this.id = obj.id;
         this.authType = obj.authtype;
         this.authKey = obj.authkey;

@@ -13,7 +13,7 @@ import SongCardLoading from "./SongCardLoading";
 export default function({songs}){
     return (<div className="songCarousel">
         <ChevronLeft/>
-        {songs.map((song)=>song.id ? <SongCard song={song}/> : <SongCardLoading/>)}
+        {songs.map((song)=>song.id ? <SongCard key={song.id} song={song}/> : <SongCardLoading key={Math.random()}/>)}
         <ChevronRight/>
     </div>)
 };

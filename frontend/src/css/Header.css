@@ -45,9 +45,8 @@
     text-decoration: none;
     color: white;
     display: inline-block;
-    height: calc(100% - 15px);
-    margin: auto;
-    padding-top: 15px;
+    height: calc(100% - 1.5vh);
+    padding-top: 1.5vh;
     padding-left: 15px;
     border-bottom: 1px solid transparent;
     padding-right: 15px;

@@ -8,11 +8,12 @@
 import * as React from "react";
 import axios from "axios";
 import Song from "../../presentational/Song";
-import SongContextMenu from "../SongContextMenu";
 import Button from "../../presentational/Button";
 import '../../css/pages/Artist.css';
 import {PlayArrow, Shuffle} from "@material-ui/icons";
 import {PlayerContext} from "../../Context";
+import ContextMenuWrapper from "../../presentational/ContextMenuWrapper";
+
 function shuffleArray(array) {
     for (let i = array.length - 1; i > 0; i--) {
         let j = Math.floor(Math.random() * (i + 1));
@@ -38,7 +39,9 @@ export default class Album extends React.Component {
     constructor(props){
         super(props);
         let id = props.data.id;
+        document.title = `Album | Petify`;
         axios.get(`http://localhost:3000/api/v2/album/${id}`).then((res)=>{
+            document.title = `${res.data.name} | Petify`;
             this.setState({
                 album: res.data,
             })
@@ -54,9 +57,9 @@ export default class Album extends React.Component {
     render() {
         return (<PlayerContext.Consumer>{player =>(
             <>
-                <SongContextMenu/>
+                <ContextMenuWrapper/>
                 <div id="artistInfo">
-                    <img src={`http://localhost:3000/api/v2/album/${this.state.album.id}/image`} alt={this.state.album.name}/>
+                    {this.state.album.id && <img src={`http://localhost:3000/api/v2/album/${this.state.album.id}/image`} alt={this.state.album.name}/>}
                     <div>
                         <h2>{this.state.album.name}</h2>
                         <h3>{this.state.album.artist.name}</h3>
@@ -70,7 +73,7 @@ export default class Album extends React.Component {
                 </div>
                 <ul className='songList'>
                     {this.state.songs.map((song)=>{
-                        return <Song song={song}/>
+                        return <Song key={song.id} song={song}/>
                     })}
                 </ul>
             </>

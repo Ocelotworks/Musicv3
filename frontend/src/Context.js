@@ -21,22 +21,24 @@ export const PlayerContext = React.createContext({
         repeat: 0,
         repeatNow: false,
         queue: [],
+        modalIsOpen: false,
     },
     control: {
-        seekTrack: ()=>null,
-        setVolume: ()=>null,
-        toggleAutoplay: ()=>null,
-        togglePlaying: ()=>console.log,
-        toggleShuffle: ()=>null,
-        toggleCasting: ()=>null,
-        setRepeat: ()=>null,
-        previousTrack: ()=>null,
-        nextTrack: ()=>null,
-        clearQueue: ()=>null,
-        saveQueue: ()=>null,
+        seekTrack: ()=>console.log("oh no"),
+        setVolume: ()=>console.log("oh no"),
+        toggleAutoplay: ()=>console.log("oh no"),
+        togglePlaying: ()=>console.log("oh no"),
+        toggleShuffle: ()=>console.log("oh no"),
+        toggleCasting: ()=>console.log("oh no"),
+        setRepeat: ()=>console.log("oh no"),
+        previousTrack: ()=>console.log("oh no"),
+        nextTrack: ()=>console.log("oh no"),
+        clearQueue: ()=>console.log("oh no"),
+        saveQueue: ()=>console.log("oh no"),
         playTrack: ()=>console.log("oh no"),
-        addToQueue: ()=>null,
-        queueNext: ()=>null,
+        addToQueue: ()=>console.log("oh no"),
+        queueNext: ()=>console.log("oh no"),
+        setIsOpen: ()=>console.log("oh no"),
     },
 });
 
@@ -44,4 +46,9 @@ export const HomeContext = React.createContext({
     recommended: [],
     recent: [],
     loading: true,
+});
+
+
+export const ModalContext = React.createContext({
+    setIsOpen: ()=>null,
 });

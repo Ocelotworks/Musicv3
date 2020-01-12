@@ -17,11 +17,12 @@ export default class Song{
     path: string;
     timestamp: Date;
     title: string;
+    plays: number;
 
-    private album: Album;
-    private artist: Artist;
-    private genre: Genre;
-    private owner: User;
+    album: Album;
+    artist: Artist;
+    genre: Genre;
+    owner: User;
 
 
     constructor(obj){
@@ -42,6 +43,7 @@ export default class Song{
             this.artist = new Artist({id: this.artistID, name: obj.artistName});
         }
     }
+
 
     static async getAll(page: number, songsPerPage: number = 50): Promise<Song[]>{
         let query = App.getDB().select().from(Song.TABLE);
@@ -78,6 +80,16 @@ export default class Song{
         return new Song(query[0]);
     }
 
+    async getAll(){
+        await Promise.all([
+            this.getAlbum(),
+            this.getArtist(),
+            this.getGenre(),
+            this.getOwner(),
+            this.getTotalPlays()
+        ]);
+    }
+
     async getAlbum(): Promise<Album>{
         if(this.album)
             return this.album;
@@ -93,18 +105,27 @@ export default class Song{
     async getGenre(): Promise<Genre> {
         if(this.genre)
             return this.genre;
-        return Genre.create(this.genreID);
+        return this.genre = await Genre.create(this.genreID);
     }
 
     async getOwner(): Promise<User> {
         if(this.owner)
             return this.owner;
-        return User.create(this.userID);
+        return this.owner = await User.create(this.userID);
     }
 
     async getTotalPlays(user: User = null): Promise<Number>{
-        return null;
+        if(user === null && this.plays != undefined){
+            return this.plays
+        }
+        let query = App.getDB().select(App.getDB().raw("COUNT(*)")).from('plays').where({song: this.id});
+        if(user)
+            query = query.andWhere({user: user.id});
+        const result = await query;
+        if(!result[0])
+            return 0;
+        if(!user)
+            this.plays = result[0]['COUNT(*)'];
+        return result[0]['COUNT(*)'];
     }
-
-
 }

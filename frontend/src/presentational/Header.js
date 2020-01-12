@@ -36,11 +36,11 @@ const links = [
 export default function(){
     return (<div id="topBar">
         <span>Petify</span>
-        {links.map((link)=><NavLink to={link.href} exact={link.exact || false} className="navLink"><link.icon/><div>{link.name}</div></NavLink>)}
+        {links.map((link)=><NavLink key={link.name} to={link.href} exact={link.exact || false} className="navLink"><link.icon/><div>{link.name}</div></NavLink>)}
 
         <div id="topBarUserContainer">
             <div className="user">
-                <img src="https://placekitten.com/16/16"/>
+                <img alt="cunt" src="https://placekitten.com/16/16"/>
                 <span>User stub</span>
             </div>
         </div>

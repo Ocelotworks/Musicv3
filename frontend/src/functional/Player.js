@@ -12,7 +12,7 @@ import {Route, Switch} from "react-router";
 import Artist from "./pages/Artist";
 import StupidReact from "../presentational/pages/StupidReact";
 import Album from "./pages/Album";
-
+import ModalContainer from "../presentational/Modal";
 
 export default class Player extends React.Component {
     state = {
@@ -24,7 +24,7 @@ export default class Player extends React.Component {
                 name: "Nobody",
                 id: ""
             },
-            length: 120,
+            length: 0,
         },
         volume: 100,
         elapsed: 0,
@@ -39,6 +39,8 @@ export default class Player extends React.Component {
         history:[],
         queue: [],
         shuffleQueue: [],
+        modalIsOpen: false,
+        returnUrl: "/",
     };
 
     toggleValue(value){
@@ -110,6 +112,13 @@ export default class Player extends React.Component {
                 song.origin = "queue";
                 this.setState(state=>state.queue.push(song))
             },
+            queueNext: (song)=>{
+                if (Array.isArray(song))
+                    return song.forEach((s)=>this.controls.queueNext(s));
+                song.origin = "queue";
+                this.setState(state=>state.queue.unshift(song))
+            },
+            setIsOpen: (modalIsOpen, returnUrl = this.state.returnUrl)=>this.setState({modalIsOpen, returnUrl})
         }
     }
 
@@ -177,15 +186,12 @@ export default class Player extends React.Component {
             <Sidebar/>
             <div id="page">
                 <Switch>
-                    <Route path="/artist/:id">
-                        <StupidReact Target={Artist}/>
-                    </Route>
-                    <Route path="/album/:id">
-                        <StupidReact Target={Album}/>
-                    </Route>
+                    <Route path="/artist/:id" children={<StupidReact Target={Artist}/>}/>
+                    <Route path="/album/:id" children={<StupidReact Target={Album}/>}/>
                     <Route path="/" children={<HomeController/>}/>
                 </Switch>
             </div>
+            <ModalContainer modalIsOpen={this.state.modalIsOpen} setIsOpen={this.controls.setIsOpen} returnUrl={this.state.returnUrl}/>
         </PlayerContext.Provider>);
     }
 }

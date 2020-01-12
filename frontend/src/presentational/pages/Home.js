@@ -6,16 +6,17 @@
  */
 
 import React from 'react';
-import {HomeContext} from "../../Context";
+import {HomeContext, PlayerContext} from "../../Context";
 import SongCarousel from "../SongCarousel";
-import SongContextMenu from "../../functional/SongContextMenu";
 import '../../css/pages/Home.css';
+import ContextMenuWrapper from "../ContextMenuWrapper";
 
 export default function(){
+    document.title = "Home | Petify";
     return (
         <HomeContext.Consumer>{
             home => (<>
-                <SongContextMenu/>
+                <ContextMenuWrapper/>
                 <h1>Recommended</h1>
                 <SongCarousel songs={home.recent} class='homeCarousel'/>
                 <h1>Latest Additions</h1>
