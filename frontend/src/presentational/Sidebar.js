@@ -32,6 +32,7 @@ import Grid from "@material-ui/core/Grid";
 import {PlayerContext} from "../Context";
 import Song from "./Song";
 import {ContextMenu, MenuItem} from "react-contextmenu";
+import {Link} from "react-router-dom";
 
 const TrackSlider = withStyles({
     root: {
@@ -99,7 +100,7 @@ export default function(){
                     <div className="sidebarElement">
                         <img className="albumArt" src={player.data.song && player.data.song.albumID ? `http://localhost:3000/api/v2/album/${player.data.song.albumID}/image` : "http://localhost:3000/img/album.png"} alt={player.data.song.name}/>
                         <p className="nowPlayingSong">{player.data.song.title || "Nothing"}</p>
-                        <p className="nowPlayingArtist">{player.data.song.artist.name || "Νοbody"}</p>
+                        <Link className="nowPlayingArtist" to={`/artist/${player.data.song ? player.data.song.artist.id : ""}`}>{player.data.song.artist.name || "Νοbody"}</Link>
                     </div>
                     <div className="sidebarElement" id="trackProgress">
                         {formatTime(player.data.elapsed)}/{formatTime(player.data.song.length)}
@@ -138,16 +139,16 @@ export default function(){
                             </div>
                         </div>
                         <ContextMenu id='queueContextMenu'>
-                            <MenuItem data={{foo: 'bar'}}>
+                            <MenuItem>
                                 <ArrowDropUp/><span>Move to Top</span>
                             </MenuItem>
-                            <MenuItem data={{foo: 'bar'}} >
+                            <MenuItem>
                                 <Shuffle/><span>Randomise Position</span>
                             </MenuItem>
-                            <MenuItem data={{foo: 'bar'}}>
+                            <MenuItem>
                                 <ArrowDropDown/><span>Move to Bottom</span>
                             </MenuItem>
-                            <MenuItem data={{foo: 'bar'}}>
+                            <MenuItem>
                                 <Info/><span>Song Info</span>
                             </MenuItem>
                         </ContextMenu>

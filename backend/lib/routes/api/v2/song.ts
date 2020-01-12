@@ -7,12 +7,13 @@ export default class Songs extends Route {
     createRoutes() {
         this.router.get("/", async (req, res)=> res.json(await Song.getAll(req.query.page)));
         this.router.get("/latest", async (req, res)=> res.json(await Song.getLastAdded()));
+        this.router.get("/since/:time", async (req, res)=> res.json(await Song.getUpdatedSince(req.params.time)));
 
         this.router.get('/:id', Middleware.getValidEntity(Song), (req, res)=>res.json(res.locals.song));
 
         this.router.get('/:id/play', Middleware.getValidEntity(Song), (req, res)=>{
             res.header("Cache-Control", "public, max-age=999999");
-            res.sendFile(res.locals.song.path);
+            res.sendFile(res.locals.song.path/*.replace("/home/peter/music/songs", "G:\\Earth Backup\\peter\\music\\songs\\")*/);
         });
 
         this.router.get('/:id/album',  Middleware.getValidEntity(Song), (req, res)=>res.redirect('/api/v2/album/'+res.locals.song.albumID));

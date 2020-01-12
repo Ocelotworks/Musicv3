@@ -50,12 +50,23 @@ export default class Song{
         return (await query).map((obj)=>new Song(obj));
     }
 
+
+    static async getUpdatedSince(since): Promise<Song[]>{
+        let query = App.getDB()
+            .select(App.getDB().raw("songs.*, artists.name AS 'artistName'"))
+            .from(Song.TABLE)
+            .orderBy("updated", "DESC")
+            .where("updated", ">=", new Date(since))
+            .innerJoin("artists", "artists.id", "songs.artist");
+        return (await query).map((obj)=>new Song(obj));
+    }
+
     static async getLastAdded(count: number = 6): Promise<Song[]>{
         let query = App.getDB()
             .select(App.getDB().raw("songs.*, artists.name AS 'artistName'"))
             .from(Song.TABLE)
             .limit(count)
-            .orderBy("timestamp", "ASC")
+            .orderBy("timestamp", "DESC")
             .innerJoin("artists", "artists.id", "songs.artist");
         return (await query).map((obj)=>new Song(obj));
     }

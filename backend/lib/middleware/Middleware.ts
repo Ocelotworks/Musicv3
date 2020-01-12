@@ -2,12 +2,13 @@ import User, {UserLevel} from "../entity/user";
 
 export default class Middleware{
 
-    static getValidEntity(Entity, parameter = "id"): any{
+    static getValidEntity(Entity, parameter = "id", passAnyway = false): any{
         return async function(req, res, next){
             const entity = await Entity.create(req.params[parameter]);
-            if(!entity)
+            if(!entity && !passAnyway)
                 return res.status(404).json({error: "No Such Entity"});
-            res.locals[entity.constructor.name.toLowerCase()] = entity;
+            if(entity)
+                res.locals[entity.constructor.name.toLowerCase()] = entity;
             next();
         };
     }

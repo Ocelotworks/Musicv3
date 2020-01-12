@@ -1,11 +1,12 @@
 #topBar {
-    position: sticky;
+    position: fixed;
     height: 5.5vh;
     background: #222;
     border-bottom: 1px solid #141415;
     color: #efefef;
     display: flex;
     z-index: 10;
+    width: 100%;
 }
 
 #topBar * {

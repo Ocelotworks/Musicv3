@@ -6,8 +6,8 @@
  */
 
 import * as React from "react";
-import {HomeContext} from "../Context";
-import Home from "../presentational/pages/Home";
+import {HomeContext} from "../../Context";
+import Home from "../../presentational/pages/Home";
 import axios from 'axios';
 
 export default class HomeController extends React.Component {

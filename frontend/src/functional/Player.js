@@ -7,8 +7,11 @@
 import * as React from "react";
 import {PlayerContext} from "../Context";
 import Sidebar from "../presentational/Sidebar";
-import HomeController from "./Home";
+import HomeController from "./pages/Home";
 import {Route, Switch} from "react-router";
+import Artist from "./pages/Artist";
+import StupidReact from "../presentational/pages/StupidReact";
+import Album from "./pages/Album";
 
 
 export default class Player extends React.Component {
@@ -102,6 +105,8 @@ export default class Player extends React.Component {
             clearQueue: ()=>this.setState({queue:[]}),
             saveQueue: ()=>null,
             addToQueue: (song)=>{
+                if (Array.isArray(song))
+                    return song.forEach((s)=>this.controls.addToQueue(s));
                 song.origin = "queue";
                 this.setState(state=>state.queue.push(song))
             },
@@ -173,10 +178,10 @@ export default class Player extends React.Component {
             <div id="page">
                 <Switch>
                     <Route path="/artist/:id">
-                        <div>artist</div>
+                        <StupidReact Target={Artist}/>
                     </Route>
                     <Route path="/album/:id">
-                        <div>album</div>
+                        <StupidReact Target={Album}/>
                     </Route>
                     <Route path="/" children={<HomeController/>}/>
                 </Switch>

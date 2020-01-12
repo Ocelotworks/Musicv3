@@ -1,6 +1,7 @@
 #page {
     margin-left: calc(14vw + 1px);
     text-align: left;
+    padding-top: 5.5vh;
 }
 
 .react-contextmenu-item span {

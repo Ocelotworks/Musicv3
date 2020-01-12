@@ -16,12 +16,13 @@
     transition: background 0.2s;
 }
 
-.songList .song:nth-of-type(odd):hover{
+/*Fuck it*/
+.songList .react-contextmenu-wrapper:nth-of-type(odd) .song:hover{
     background: rgba(0, 0, 0, 0.3);
     transition: background 0.2s;
 }
 
-.songList .song:nth-of-type(odd){
+.songList .react-contextmenu-wrapper:nth-of-type(odd) .song{
     background: rgba(0, 0, 0, 0.1);
 }
 

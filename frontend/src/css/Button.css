@@ -1,0 +1,21 @@
+button {
+    color: white;
+    -webkit-appearance: none;
+    border: 1px solid black;
+    background: #141414;
+    padding: 3px 10px 3px 10px;
+    border-radius: 5px;
+    cursor:  pointer;
+    transition: color 0.3s;
+    margin-right: 5px;
+}
+
+button span {
+    bottom: 6px;
+    position: relative;
+}
+
+button:hover {
+    color: #1da653;
+    transition: color 0.3s;
+}

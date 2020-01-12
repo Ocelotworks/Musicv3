@@ -27,9 +27,14 @@ export class App {
         //support application/x-www-form-urlencoded post data
         this.app.use(bodyParser.urlencoded({ extended: false }));
 
+        this.app.use(function(err, req, res, next){
+           res.setHeader("Access-Control-Allow-Origin", "*");
+           next();
+        });
+
         new Base(this, this.app);
 
-        this.app.use(express.static('../frontend'));
+        this.app.use(express.static('../frontend/public'));
 
         this.app.use(function(err, req, res, next){
             res.status(500).json(err);

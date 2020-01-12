@@ -1,6 +1,7 @@
 #sideBar {
     display: flex;
     flex-direction: column;
+    top: 5.5vh;
     width: 14vw;
     position: fixed;
     background: #222;
@@ -30,6 +31,7 @@
     color: #636363;
     margin-top: 5px !important;
     font-size: 20px;
+    text-decoration: none;
 }
 
 #controls, #queue {

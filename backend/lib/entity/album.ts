@@ -13,19 +13,25 @@ export default class Album{
 
     constructor(obj){
         this.id = obj.id;
-        this.artistID = obj.artistID;
+        this.artistID = obj.artist;
         this.name = obj.name;
+
+        if(obj.artistName){
+            this.artist = new Artist({id: this.artistID, name: obj.artistName});
+        }
     }
 
     static async create(id: String): Promise<Album>{
-        const query = await (App.getDB().select("id", "artist", "name").where({id}).from(Album.TABLE).limit(1));
+        let query = await App.getDB().select(App.getDB().raw("albums.id, artist, albums.name, artists.name AS 'artistName'"))
+            .join("artists", "artists.id", "albums.artist")
+            .where({'albums.id':id}).from(Album.TABLE);
         if(!query[0])
             return null;
         return new Album(query[0]);
     }
 
     static async getAll(page: number, albumsPerPage: number = 50): Promise<Album[]>{
-        let query = App.getDB().select("id", "artist", "name").from(Album.TABLE);
+        let query = App.getDB().select("albums.id", "artist", "albums.name", App.getDB().raw("artists.name AS 'artistName'")).innerJoin("artists", "artists.id", "albums.artist").from(Album.TABLE);
         if(page && page > 0)
             query = query.offset(page*albumsPerPage).limit(albumsPerPage);
         return (await query).map((obj)=>new Album(obj));
@@ -43,8 +49,12 @@ export default class Album{
     }
 
     async getSongs(): Promise<Song[]>{
-        const query = await (App.getDB().select().where({album: this.id}).from(Song.TABLE));
-        return query.map((obj)=>new Song(obj));
+        let query = App.getDB()
+            .select(App.getDB().raw("songs.*, artists.name AS 'artistName'"))
+            .from(Song.TABLE)
+            .where({album: this.id})
+            .innerJoin("artists", "artists.id", "songs.artist");
+        return (await query).map((obj)=>new Song(obj));
     }
 
 

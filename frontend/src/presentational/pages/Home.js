@@ -9,7 +9,7 @@ import React from 'react';
 import {HomeContext} from "../../Context";
 import SongCarousel from "../SongCarousel";
 import SongContextMenu from "../../functional/SongContextMenu";
-import '../../css/Home.css';
+import '../../css/pages/Home.css';
 
 export default function(){
     return (
