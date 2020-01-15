@@ -74,7 +74,13 @@ export default class Song{
     }
 
     static async create(id: String): Promise<Song>{
-        const query = await (App.getDB().select().where({id}).from(this.TABLE).limit(1));
+        let query = await App.getDB()
+            .select(App.getDB().raw("songs.*, artists.name AS 'artistName'"))
+            .from(Song.TABLE)
+            .orderBy("updated", "DESC")
+            .where({'songs.id': id})
+            .limit(1)
+            .innerJoin("artists", "artists.id", "songs.artist");
         if(!query[0])
             return null;
         return new Song(query[0]);

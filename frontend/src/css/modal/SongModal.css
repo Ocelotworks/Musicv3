@@ -1,0 +1,29 @@
+#songModalHeader {
+    display: flex;
+    flex-direction: row;
+}
+
+.songInfoColumn {
+    display: flex;
+    flex-direction: column;
+}
+
+.songInfoElement {
+    width: 100%;
+    display: block;
+}
+
+.songInfoElement h1 {
+    width: 100%;
+}
+
+
+#songModal a {
+    text-decoration: none;
+    cursor:  pointer;
+    color: #efefef;
+}
+
+#songModal a:hover {
+    color: grey;
+}

@@ -8,11 +8,12 @@ import * as React from "react";
 import {PlayerContext} from "../Context";
 import Sidebar from "../presentational/Sidebar";
 import HomeController from "./pages/Home";
-import {Route, Switch} from "react-router";
+import {Redirect, Route, Switch} from "react-router";
 import Artist from "./pages/Artist";
 import StupidReact from "../presentational/pages/StupidReact";
 import Album from "./pages/Album";
 import ModalContainer from "../presentational/Modal";
+import Play from "./pages/Play";
 
 export default class Player extends React.Component {
     state = {
@@ -40,6 +41,7 @@ export default class Player extends React.Component {
         queue: [],
         shuffleQueue: [],
         modalIsOpen: false,
+        closeRequested: false,
         returnUrl: "/",
     };
 
@@ -118,7 +120,8 @@ export default class Player extends React.Component {
                 song.origin = "queue";
                 this.setState(state=>state.queue.unshift(song))
             },
-            setIsOpen: (modalIsOpen, returnUrl = this.state.returnUrl)=>this.setState({modalIsOpen, returnUrl})
+            setIsOpen: (modalIsOpen, returnUrl = this.state.returnUrl)=>this.setState({modalIsOpen, returnUrl}),
+            requestClose: ()=>this.setState({closeRequested: true, modalIsOpen: false}),
         }
     }
 
@@ -184,14 +187,16 @@ export default class Player extends React.Component {
         return (<PlayerContext.Provider value={{data: this.state, control: this.controls}}>
             <audio ref={(a)=>this._audio=a} crossOrigin="anonymous"/>
             <Sidebar/>
+            {this.state.closeRequested && <Redirect to={this.state.returnUrl}>{this.setState({closeRequested: false})}</Redirect>}
             <div id="page">
                 <Switch>
                     <Route path="/artist/:id" children={<StupidReact Target={Artist}/>}/>
                     <Route path="/album/:id" children={<StupidReact Target={Album}/>}/>
+                    <Route path={["/play/:id", "/play/:id/:seo"]} children={<StupidReact Target={Play}/>}/>
                     <Route path="/" children={<HomeController/>}/>
                 </Switch>
             </div>
-            <ModalContainer modalIsOpen={this.state.modalIsOpen} setIsOpen={this.controls.setIsOpen} returnUrl={this.state.returnUrl}/>
+            <ModalContainer modalIsOpen={this.state.modalIsOpen} setIsOpen={this.controls.setIsOpen} returnUrl={this.state.returnUrl} requestClose={this.controls.requestClose}/>
         </PlayerContext.Provider>);
     }
 }

@@ -27,7 +27,7 @@ const customStyles = {
         border                : '1px solid black'
     }
 };
-export default function ModalContainer({setIsOpen, modalIsOpen, returnUrl}){
+export default function ModalContainer({setIsOpen, modalIsOpen, returnUrl, requestClose}){
     function openModal() {
         console.log("Opening modal");
         setIsOpen(true);
@@ -42,17 +42,31 @@ export default function ModalContainer({setIsOpen, modalIsOpen, returnUrl}){
         setIsOpen(false);
     }
 
+    console.log(returnUrl);
+
     return (
         <div>
-            <Modal isOpen={modalIsOpen} onAfterOpen={afterOpenModal} onRequestClose={closeModal} style={customStyles} contentLabel="Modal">
-                {!modalIsOpen && <Redirect to={returnUrl}/>}
+            <Modal isOpen={modalIsOpen} onAfterOpen={afterOpenModal} onRequestClose={requestClose} style={customStyles} contentLabel="Modal">
                 <Switch>
-                    <Route path={`${returnUrl}/modal/song/:id`} children={<StupidReact Target={SongModal}/>}/>
+                    <Route path={`${returnUrl}/modal/song/:id`}>
+                        <SwitchModal switchModal={openModal} condition={!modalIsOpen}/>
+                        <StupidReact Target={SongModal}/>
+                    </Route>
                     <Route path="*">
-                        FUCK!!
+                        <SwitchModal switchModal={closeModal}  condition={modalIsOpen}/>
                     </Route>
                 </Switch>
             </Modal>
         </div>
     );
+};
+
+
+function SwitchModal({switchModal, condition}){
+    console.log(switchModal, condition);
+    if(condition)
+        switchModal();
+    return (<></>)
 }
+
+

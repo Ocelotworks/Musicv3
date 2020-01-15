@@ -13,6 +13,7 @@ import '../../css/pages/Artist.css';
 import {PlayArrow, Shuffle} from "@material-ui/icons";
 import {PlayerContext} from "../../Context";
 import ContextMenuWrapper from "../../presentational/ContextMenuWrapper";
+import Error from "../../presentational/Error";
 
 function shuffleArray(array) {
     for (let i = array.length - 1; i > 0; i--) {
@@ -45,16 +46,18 @@ export default class Album extends React.Component {
             this.setState({
                 album: res.data,
             })
-        });
+        }).catch((error)=>this.setState({error: error.toString()}));
 
         axios.get(`http://localhost:3000/api/v2/album/${id}/songs`).then((res)=>{
             this.setState({
                 songs: res.data,
             })
-        })
+        }).catch((error)=>this.setState({error: error.toString()}));
     }
 
     render() {
+        if(this.state.error)
+            return <Error error={this.state.error}/>;
         return (<PlayerContext.Consumer>{player =>(
             <>
                 <ContextMenuWrapper/>

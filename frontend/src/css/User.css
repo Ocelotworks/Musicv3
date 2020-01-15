@@ -1,0 +1,24 @@
+.user img {
+    height: 32px;
+    border-radius: 100px;
+    border: 1px solid black;
+    background: white;
+}
+
+.user {
+    cursor: pointer;
+}
+.user span {
+    bottom: 11px;
+    position: relative;
+    left: 5px;
+}
+
+.user.level-100 img {
+    border-color: #1ed760;
+    border-width: 1px;
+}
+
+.user.level-100:hover span {
+    color: #1ed760;
+}

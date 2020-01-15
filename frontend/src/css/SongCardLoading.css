@@ -20,6 +20,7 @@
     height: 225px;
     background: rgba(0, 0, 0, 0.33);
     animation: pulse 1.65s infinite linear;
+    filter: blur(4px);
 }
 
 
