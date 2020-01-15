@@ -8,10 +8,15 @@ export default class PlaylistEntry extends Song {
 
     private playlist: Playlist;
 
-    constructor(obj){
+    constructor(obj, playlist){
         super(obj);
+        //Stop circular json
+        Object.defineProperty(this, 'playlist', {value: 'static', writable: true});
         this.position = obj.position;
         this.playlistID = obj.playlist_id;
+
+        if(playlist != null)
+            this.playlist = playlist;
     }
 
     async getPlaylist(): Promise<Playlist>{
