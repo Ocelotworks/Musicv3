@@ -14,6 +14,8 @@ import StupidReact from "../presentational/pages/StupidReact";
 import Album from "./pages/Album";
 import ModalContainer from "../presentational/Modal";
 import Play from "./pages/Play";
+import Playlists from "./pages/Playlists";
+import Playlist from "./pages/Playlist";
 
 export default class Player extends React.Component {
     state = {
@@ -104,7 +106,17 @@ export default class Player extends React.Component {
                 });
                 this._audio.autoplay = true;
                 this._audio.src = `https://unacceptableuse.com/petify/song/${song.id}`;
-                // this._audio.src = `http://localhost:3000/api/v2/song/${song.id}/play`
+                if ('mediaSession' in navigator) {
+                    /* eslint-disable-next-line */
+                    navigator.mediaSession.metadata = new MediaMetadata({
+                        title: song.title,
+                        artist: song.artist.name,
+                        artwork: [
+                            {src: `http://localhost:3000/api/v2/album/${song.albumID}/image`, sizes: '300x300', type: 'image/png'},
+                        ]
+                    });
+                }
+                    // this._audio.src = `http://localhost:3000/api/v2/song/${song.id}/play`
             },
             clearQueue: ()=>this.setState({queue:[]}),
             saveQueue: ()=>null,
@@ -112,13 +124,17 @@ export default class Player extends React.Component {
                 if (Array.isArray(song))
                     return song.forEach((s)=>this.controls.addToQueue(s));
                 song.origin = "queue";
-                this.setState(state=>state.queue.push(song))
+                this.setState(state=>state.queue.push(song));
+
             },
             queueNext: (song)=>{
                 if (Array.isArray(song))
                     return song.forEach((s)=>this.controls.queueNext(s));
                 song.origin = "queue";
-                this.setState(state=>state.queue.unshift(song))
+                this.setState(state=>state.queue.unshift(song));
+
+
+
             },
             setIsOpen: (modalIsOpen, returnUrl = this.state.returnUrl)=>this.setState({modalIsOpen, returnUrl}),
             requestClose: ()=>this.setState({closeRequested: true, modalIsOpen: false}),
@@ -131,6 +147,8 @@ export default class Player extends React.Component {
         }else {
             this._audio.volume = this.state.volume / 100;
         }
+        if(localStorage)
+            localStorage.setItem("queue", JSON.stringify(this.state.queue));
     }
 
     componentDidMount(){
@@ -159,6 +177,18 @@ export default class Player extends React.Component {
             })
         });
 
+        if(window.localStorage && window.localStorage.getItem("queue") != null){
+            try {
+                let queue = JSON.parse(window.localStorage.getItem("queue"));
+                if(Array.isArray(queue))
+                    this.setState({queue});
+                else
+                    window.localStorage.removeItem("queue")
+            }catch(e){
+                window.localStorage.removeItem("queue")
+            }
+        }
+
         this._audio.loop = false;
 
         this._audio.onended = ()=>{
@@ -181,6 +211,15 @@ export default class Player extends React.Component {
             this._audio.remote.onconnecting = ()=>{this.setState({casting: true})};
             this._audio.remote.ondisconnect = ()=>{this.setState({casting: false, castConnected: false})}
         }
+
+        if ('mediaSession' in navigator) {
+            navigator.mediaSession.setActionHandler('play', this.controls.togglePlaying);
+            navigator.mediaSession.setActionHandler('pause', this.controls.togglePlaying);
+            navigator.mediaSession.setActionHandler('previoustrack', this.controls.previousTrack);
+            navigator.mediaSession.setActionHandler('nexttrack', this.controls.nextTrack);
+            navigator.mediaSession.setActionHandler('seekbackward', ()=>this.controls.seekTrack(null, this.state.elapsed-10));
+            navigator.mediaSession.setActionHandler('seekforward', ()=>this.controls.seekTrack(null, this.state.elapsed+10));
+        }
     }
 
     render() {
@@ -192,6 +231,8 @@ export default class Player extends React.Component {
                 <Switch>
                     <Route path="/artist/:id" children={<StupidReact Target={Artist}/>}/>
                     <Route path="/album/:id" children={<StupidReact Target={Album}/>}/>
+                    <Route path="/playlist/:id" children={<StupidReact Target={Playlist}/>}/>
+                    <Route path="/playlist" children={<Playlists/>}/>
                     <Route path={["/play/:id", "/play/:id/:seo"]} children={<StupidReact Target={Play}/>}/>
                     <Route path="/" children={<HomeController/>}/>
                 </Switch>

@@ -2,6 +2,7 @@ import {App} from "../app";
 import PlaylistEntry from "./playlistEntry";
 import User from "./user";
 import Song from "./song";
+import Artist from "./artist";
 
 
 export default class Playlist{
@@ -10,6 +11,8 @@ export default class Playlist{
     name: string;
     private: boolean;
     ownerID: string;
+    count: number;
+    runtime: number;
 
     private owner: User;
 
@@ -25,6 +28,8 @@ export default class Playlist{
         this.name = obj.name;
         this.private = !!obj.private;
         this.ownerID = obj.owner;
+        this.count = obj['count'];
+        this.runtime = obj.runtime;
     }
 
     static async getAll(page: number, songsPerPage: number = 50): Promise<Playlist[]>{
@@ -52,7 +57,12 @@ export default class Playlist{
     }
 
     async getSongs(): Promise<PlaylistEntry[]>{
-        const query = await (App.getDB().select().where({playlist_id: this.id}).from(PlaylistEntry.TABLE).innerJoin(Song.TABLE, "songs.id", "song_id"));
+        const query = await (App.getDB().select(App.getDB().raw("playlist_data.*, songs.*, artists.name AS 'artistName'"))
+            .where({playlist_id: this.id})
+            .from(PlaylistEntry.TABLE)
+            .innerJoin(Song.TABLE, "songs.id", "song_id")
+            .innerJoin(Artist.TABLE, "artists.id", "songs.artist")
+        );
         return this.songs = query.map((obj)=>new PlaylistEntry(obj, this));
     }
 }

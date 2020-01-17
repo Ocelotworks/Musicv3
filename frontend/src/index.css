@@ -14,6 +14,11 @@ body {
   color: #efefef;
 }
 
+a {
+  color: white;
+  text-decoration: none;
+}
+
 @media (prefers-reduced-motion: reduce) {
   * {
     transition-delay: 0s;

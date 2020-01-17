@@ -1,0 +1,60 @@
+.playlist {
+    list-style: none;
+    padding: 15px 10px;
+    position: relative;
+}
+
+.playlist:hover {
+    background: rgba(0,0,0,0.5);
+    transition: 0.3s;
+}
+
+.playlist:nth-of-type(odd):hover{
+    background: rgba(0,0,0,0.6);
+}
+
+.playlist .playlistName {
+    font-size: 24px;
+}
+
+.playlistContainer {
+    background: rgba(0,0,0,0.2);
+    cursor: pointer;
+    transition: 0.3s;
+    display: inline-block;
+    width: 100%;
+}
+
+.playlistContainer:nth-child(odd){
+    background: rgba(0,0,0,0.3);
+
+}
+
+.playlistList a {
+    color: white;
+    text-decoration: none;
+}
+
+.playlistList {
+    padding: 0;
+}
+
+.playlist .user {
+    position: absolute;
+    left: 86%;
+    bottom: 18px;
+}
+
+.playlist .user:before {
+    content: "Added by";
+    color: #525252;
+    position: relative;
+    bottom: 11px;
+    right: 7px;
+}
+
+.playlistInfo {
+    display: block;
+    font-size: 14px;
+    color: grey;
+}
