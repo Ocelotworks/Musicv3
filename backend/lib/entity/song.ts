@@ -73,6 +73,16 @@ export default class Song{
         return (await query).map((obj)=>new Song(obj));
     }
 
+    static async getByUser(user: User): Promise<Song[]>{
+        let query = App.getDB()
+            .select(App.getDB().raw("songs.*, artists.name AS 'artistName'"))
+            .from(Song.TABLE)
+            .orderBy("timestamp", "DESC")
+            .innerJoin("artists", "artists.id", "songs.artist")
+            .where({addedby: user.id});
+        return (await query).map((obj)=>new Song(obj));
+    }
+
     static async create(id: String): Promise<Song>{
         let query = await App.getDB()
             .select(App.getDB().raw("songs.*, artists.name AS 'artistName'"))
