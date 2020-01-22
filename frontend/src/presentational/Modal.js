@@ -50,7 +50,7 @@ export default function ModalContainer({setIsOpen, modalIsOpen, returnUrl, reque
                 <Switch>
                     <Route path={`${returnUrl}/modal/song/:id`}>
                         <SwitchModal switchModal={openModal} condition={!modalIsOpen}/>
-                        <StupidReact Target={SongModal}/>
+                        <StupidReact Target={SongModal} props={{returnUrl}}/>
                     </Route>
                     <Route path="*">
                         <SwitchModal switchModal={closeModal}  condition={modalIsOpen}/>

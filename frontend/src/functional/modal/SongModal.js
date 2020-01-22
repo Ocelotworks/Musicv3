@@ -16,6 +16,11 @@ import {
     Edit,
     Delete
 } from "@material-ui/icons";
+import {Route, Router, Switch} from "react-router";
+import StupidReact from "../../presentational/pages/StupidReact";
+import Artist from "../pages/Artist";
+import Album from "../pages/Album";
+import Related from "./song/Related";
 
 const links = [
     {icon: PlaylistPlay, href: "playlists", name: "Playlists"},
@@ -30,9 +35,15 @@ export default class SongModal extends React.Component {
         song: null,
     };
 
+    currentUrl = "";
+
     constructor(props){
         super(props);
         let id = props.data.id;
+        this.currentUrl = `${props.extraData.returnUrl}/modal/song/${id}/`;
+
+        console.log(props);
+
         axios.get(`http://localhost:3000/api/v2/song/${id}/info`).then((res)=>{
             this.setState({
                 song: res.data,
@@ -67,7 +78,12 @@ export default class SongModal extends React.Component {
                 </div>
             </div>
             <div id="songModalNav">
-                {links.map((link)=><NavLink key={link.name} to={link.href} exact={link.exact || false} className="navLink"><link.icon/><div>{link.name}</div></NavLink>)}
+                {links.map((link)=><NavLink key={link.name} to={this.currentUrl+link.href} exact={link.exact || false} className="navLink"><link.icon/><div>{link.name}</div></NavLink>)}
+            </div>
+            <div id="songModalTabContainer">
+                <Switch>
+                    <Route path={`${this.currentUrl}related`} children={<Related song={this.state.song}/>}/>
+                </Switch>
             </div>
         </div>);
     }

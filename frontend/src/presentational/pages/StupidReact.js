@@ -6,7 +6,7 @@ import {useParams} from "react-router-dom";
  * ╚════ ║   (music3) StupidReact
  *  ════╝
  */
-export default function({Target}){
+export default function({Target, props}){
     //For some reason required to stop react from crashing
-    return<Target data={useParams()}/>
+    return<Target data={useParams()} extraData={props}/>
 }

@@ -3,6 +3,7 @@ import Artist from "./artist";
 import Genre from "./genre";
 import {App} from "../app";
 import User from "./user";
+import SongRelations from "./songRelations";
 
 export default class Song{
     static TABLE: string = "songs";
@@ -26,6 +27,10 @@ export default class Song{
 
 
     constructor(obj){
+        if(obj.artists){
+            this.artist = new Artist(obj.artists);
+            obj = obj.songs;
+        }
         Object.defineProperty(this, 'path', {value: 'static', writable: true}); //Hide path from JSON
         this.userID = obj.addedby;
         this.albumID = obj.album;
@@ -128,6 +133,10 @@ export default class Song{
         if(this.owner)
             return this.owner;
         return this.owner = await User.create(this.userID);
+    }
+
+    getRelated(): Promise<SongRelations[]> {
+        return SongRelations.getForSong(this);
     }
 
     async getTotalPlays(user: User = null): Promise<Number>{

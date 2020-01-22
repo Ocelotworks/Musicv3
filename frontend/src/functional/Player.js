@@ -160,7 +160,7 @@ export default class Player extends React.Component {
             this.setState({buffering: false});
             if(this.stateUpdater)
                 clearInterval(this.stateUpdater);
-            this.stateUpdater = setInterval(()=>{this.setState({elapsed: this._audio.currentTime})}, 1000);
+            this.stateUpdater = setInterval(()=>{this.setState({elapsed: this._audio.currentTime})}, 500);
         };
         this._audio.onpause = ()=>{
             if(this.stateUpdater)
