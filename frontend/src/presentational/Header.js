@@ -19,6 +19,7 @@ import {
     InsertChart,
     Lock,
 } from "@material-ui/icons";
+import User from "./User";
 
 const links = [
     {icon: Home, href: "/", name: "Home", exact: true},
@@ -35,14 +36,12 @@ const links = [
 
 export default function(){
     return (<div id="topBar">
-        <span>Petify</span>
+        <span id="title">Petify</span>
         {links.map((link)=><NavLink key={link.name} to={link.href} exact={link.exact || false} className="navLink"><link.icon/><div>{link.name}</div></NavLink>)}
 
         <div id="topBarUserContainer">
-            <div className="user">
-                <img alt="cunt" src="https://placekitten.com/16/16"/>
-                <span>User stub</span>
-            </div>
+            <input type="text" id="search" placeholder="Search" autoComplete="false"/>
+            <User user={{id: "aa", username: "aabc", avatar: "https://placekitten.com/128/128", level: 100}}/>
         </div>
     </div>)
 }

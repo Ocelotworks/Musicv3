@@ -13,7 +13,7 @@
     margin: auto 0;
 }
 
-#topBar span {
+#title {
     align-self: flex-start;
     text-align: left;
     display: inline-block;
@@ -27,16 +27,20 @@
     right: 0;
     height: 100%;
     background: transparent;
-    cursor: pointer;
-    padding-right: 15px;
-    transition: background 0.3s;
 }
 
 #topBarUserContainer .user {
-    margin-top: 1.25vh;
+    padding-top: 1.25vh;
+    display: inline-block;
+    min-width: 4vw;
+    height: calc(100% - 1.25vh);
+    padding-right: 15px;
+    transition: 0.3s;
+    transition-property: background;
+    padding-left: 15px;
 }
 
-#topBarUserContainer:hover {
+#topBarUserContainer .user:hover {
     background: rgba(0,0,0,0.5);
 }
 
@@ -68,3 +72,9 @@
     position: relative;
     padding-left: 5px;
 }
+ #search {
+     display: inline;
+     margin-right: 25px;
+     bottom: 14px;
+     position: relative;
+ }

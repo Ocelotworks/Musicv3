@@ -52,3 +52,8 @@ export const HomeContext = React.createContext({
 export const ModalContext = React.createContext({
     setIsOpen: ()=>null,
 });
+
+export const UserContext = React.createContext({
+    user: {},
+    token: null,
+});
