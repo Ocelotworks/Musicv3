@@ -1,0 +1,14 @@
+#addSongs {
+    padding-left: 20px;
+}
+
+#songUrlInput {
+    display: block;
+    background: rgba(0,0,0,0.5);
+    border: 1px solid black;
+    border-radius: 5px;
+    width: 50%;
+    padding: 10px 5px 10px 5px;
+    margin: 5px;
+    color: white;
+}

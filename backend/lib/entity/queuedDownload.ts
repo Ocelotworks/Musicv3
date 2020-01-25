@@ -15,6 +15,7 @@ export default class QueuedDownload{
     albumID: string;
     playlistID: string;
     status: DownloadStatus;
+    id: number;
 
     private owner: User;
     private artist: Artist;
@@ -22,6 +23,17 @@ export default class QueuedDownload{
     private playlist: Playlist;
 
     constructor(obj){
+        if(obj.artists){
+            this.artist = new Artist(obj.artists);
+            this.album = new Album(obj.albums);
+            this.owner = new User(obj.users);
+            if(obj.playlists && obj.playlists.id) {
+                this.playlist = new Playlist(obj.playlists)
+            }
+            obj = obj.queue;
+        }
+
+        this.id = obj.id;
         this.url = obj.url;
         this.destination = obj.destination;
         this.userID = obj.user;
@@ -29,7 +41,7 @@ export default class QueuedDownload{
         this.title = obj.title;
         this.albumID = obj.album;
         this.playlistID = obj.playlist;
-        this.status = obj.playlist;
+        this.status = obj.status;
     }
 
     static async create(id: string): Promise<QueuedDownload>{
@@ -60,7 +72,27 @@ export default class QueuedDownload{
     async getOwner(): Promise<User> {
         if(this.owner)
             return this.owner;
-        return User.create(this.userID);
+        return this.owner = await User.create(this.userID);
+    }
+
+    async delete(): Promise<boolean>{
+        let query = App.getDB().delete().from(QueuedDownload.TABLE).where({id: this.id}).limit(1);
+        return await query > 0;
+    }
+
+    static async getAll(page: number, songsPerPage: number = 50): Promise<QueuedDownload[]>{
+        let query = App.getDB()
+            .select()
+            .options({nestTables: true})
+            .from(QueuedDownload.TABLE)
+            .innerJoin("artists", "artists.id", "queue.artist")
+            .innerJoin("albums", "albums.id", "queue.album")
+            .innerJoin("users", "users.id", "queue.addedby")
+            .leftJoin("playlists", "playlists.id", "queue.playlist")
+            .orderBy("queue.id", "DESC");
+        if(page)
+            query = query.offset(page*songsPerPage).limit(songsPerPage);
+        return (await query).map((obj)=>new QueuedDownload(obj));
     }
 }
 

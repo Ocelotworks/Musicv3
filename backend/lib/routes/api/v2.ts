@@ -4,6 +4,7 @@ import Albums from "./v2/album";
 import Artists from "./v2/artist";
 import Playlists from "./v2/playlist";
 import User from "./v2/user";
+import Downloads from "./v2/download";
 
 export default class v2 extends Route{
     createRoutes() {
@@ -12,6 +13,7 @@ export default class v2 extends Route{
         new Artists(this.app, this.router);
         new Playlists(this.app, this.router);
         new User(this.app, this.router);
+        new Downloads(this.app, this.router);
     }
 
     getBase(): string {

@@ -17,6 +17,7 @@ import Play from "./pages/Play";
 import Playlists from "./pages/Playlists";
 import Playlist from "./pages/Playlist";
 import User from "./pages/User";
+import Add from "./pages/Add";
 
 export default class Player extends React.Component {
     state = {
@@ -234,7 +235,9 @@ export default class Player extends React.Component {
                     <Route path="/playlist/:id" children={<StupidReact Target={Playlist}/>}/>
                     <Route path="/playlist" children={<Playlists/>}/>
                     <Route path="/user/:id" children={<StupidReact Target={User}/>}/>
+                    <Route path="/add" children={<Add/>}/>
                     <Route path={["/play/:id", "/play/:id/:seo"]} children={<StupidReact Target={Play}/>}/>
+                    <Route path="/cast" children={<HomeController/>}/>
                     <Route path="/" children={<HomeController/>}/>
                 </Switch>
             </div>

@@ -1,0 +1,91 @@
+img.downloadImage {
+    width: 160px;
+}
+
+.download {
+    display: flex;
+    flex-wrap: wrap;
+    position: relative;
+    flex-direction: row;
+    margin-bottom: 15px;
+}
+
+.downloadInfo {
+    display: flex;
+    flex-wrap: wrap;
+    flex-direction: column;
+    position: relative;
+    margin-left: 15px;
+}
+
+.downloadTitle {
+    font-size: 24px;
+}
+
+.downloadInfo .user {
+    position: absolute;
+    bottom: 4px;
+}
+
+.downloadLink {
+    color: grey;
+}
+
+.downloadProgress {
+    width: 30vw;
+    margin-top: 11px;
+    font-size: 11px;
+    font-variant: small-caps;
+    background: rgba(255,255,255,0.1);
+    border-radius: 6px;
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    position: relative;
+}
+
+.downloadProgress span {
+    padding-top: 7px;
+    padding-left: 10px;
+    display: inline-block;
+    position: absolute;
+    top: 0;
+}
+
+.downloadProgress.waiting{
+    background: transparent;
+    border: 1px solid rgba(0, 255, 0, 0.2);
+}
+
+.downloadProgress.processing{
+    background: rgba(0, 255, 0, 0.1);
+    border: 1px solid rgba(0, 255, 0, 0.2);
+}
+
+.downloadProgress.queued{
+    background: rgba(255, 255, 0, 0.1);
+    border: 1px solid rgba(255, 255, 0, 0.2);
+}
+
+.downloadProgress.failed{
+    background: rgba(255,0,0,0.1);
+    border: 1px solid rgba(255, 0, 0, 0.2);
+}
+
+.downloadControl {
+    display: inline-block;
+    height: calc(100% - 5px);
+    border-right: 1px solid rgba(255,255,255,0.3);
+    padding-left: 5px;
+    padding-right: 5px;
+    padding-top: 5px;
+    cursor: pointer;
+}
+
+.downloadControl:first-of-type{
+    border-bottom-left-radius: 4px;
+    border-top-left-radius: 4px;
+}
+
+.downloadControl:hover {
+    background: rgba(255,255,255,0.5);
+    transition:  background 0.3s;
+}
