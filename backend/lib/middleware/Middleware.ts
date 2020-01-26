@@ -15,9 +15,9 @@ export default class Middleware{
 
 
     static async authenticate(req, res, next){
-        if(!req.headers['Authorization'])
+        if(!req.headers['authorization'])
             return next();
-        let parts = req.headers['Authorization'].split(" ");
+        let parts = req.headers['authorization'].split(" ");
         if(parts[0] !== "Bearer")
             return next();
 
@@ -26,7 +26,9 @@ export default class Middleware{
         if(!user)
             return next();
 
+        //This might be a problem later
         res.locals.user = user;
+        res.locals.loggedInUser = user;
         next();
     }
 
@@ -37,7 +39,22 @@ export default class Middleware{
         res.status(401).json({error: "Authorisation Required"});
     }
 
-    static async requireLevel(level: UserLevel){
+
+    static requireOwner(Entity, owner = "ownerID"){
+        return function(req, res, next){
+            let entityName = Entity.name.toLowerCase();
+            let entity = res.locals[entityName];
+            if(entity.private === false)
+                return next();
+            console.log(entity);
+            if(res.locals.loggedInUser && entity[owner] && entity[owner] === res.locals.user.id)
+                return next();
+
+            res.status(404).json({error: "No Such Entity"});
+        }
+    }
+
+    static requireLevel(level: UserLevel){
         return function(req, res, next){
             if(res.locals.user.level >= level)
                 return next();

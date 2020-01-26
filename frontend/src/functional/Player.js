@@ -18,6 +18,9 @@ import Playlists from "./pages/Playlists";
 import Playlist from "./pages/Playlist";
 import User from "./pages/User";
 import Add from "./pages/Add";
+import LoginController from "../presentational/LoginController";
+import Header from "../presentational/Header";
+import axios from "axios";
 
 export default class Player extends React.Component {
     state = {
@@ -37,8 +40,9 @@ export default class Player extends React.Component {
         buffering: false,
         autoplay: true,
         shuffle: true,
-        casting: false,
-        castConnected: false,
+        castSession: null,
+        castPlayer: null,
+        castController: null,
         repeat: 0,
         repeatNow: false,
         history:[],
@@ -47,6 +51,7 @@ export default class Player extends React.Component {
         modalIsOpen: false,
         closeRequested: false,
         returnUrl: "/",
+        user: null,
     };
 
     toggleValue(value){
@@ -59,15 +64,30 @@ export default class Player extends React.Component {
             seekTrack: (event, seek)=>{
                 const elapsed = this.state.song.length * (seek/100);
                 console.log("Seeking to ", elapsed);
-                this._audio.currentTime = elapsed;
+                if(this.state.castSession){
+                    this.state.castSession.getMediaSession().seek({currentTime: elapsed}, console.log, console.error);
+                    this.state.castController.seek();
+                }else{
+                    this._audio.currentTime = elapsed;
+                }
+
                 this.setState({elapsed})
             },
             setVolume: (event, volume)=>this.setState({volume}),
             togglePlaying: ()=>{
-                this._audio[!this.state.playing ? "play":"pause"]();
+                /*eslint-disable */
+                if(this.state.castSession) {
+                    console.log("Casty shit");
+                    console.log(this.state.castController);
+                    this.state.castController.playOrPause();
+                }else{
+                    this._audio[!this.state.playing ? "play":"pause"]();
+                }
+                /*eslint-enable*/
+
                 this.setState({
                     playing: !this.state.playing,
-                })
+                });
             },
             toggleAutoplay: this.toggleValue("autoplay"),
             toggleShuffle: this.toggleValue("shuffle"),
@@ -91,23 +111,39 @@ export default class Player extends React.Component {
                     })
                 }
             },
-            playTrack: (song, isHistory = false)=>{
-                this.setState((state)=>{
-                    if(state.song) {
-                        if(isHistory){
-                            state[song.origin || "shuffleQueue"].unshift(state.song);
-                        }else{
-                            state.history.push(state.song)
+            playTrack: (song, isHistory = false, isCast = false)=>{
+                if(!isCast) {
+                    this.setState((state) => {
+                        if (state.song) {
+                            if (isHistory) {
+                                state[song.origin || "shuffleQueue"].unshift(state.song);
+                            } else {
+                                state.history.push(state.song)
+                            }
                         }
-                    }
-                    state.song = song;
-                    state.playing = true;
-                    state.elapsed = 0;
-                    state.buffering = true;
-                    return state;
-                });
-                this._audio.autoplay = true;
-                this._audio.src = `https://unacceptableuse.com/petify/song/${song.id}`;
+                        state.song = song;
+                        state.playing = true;
+                        state.elapsed = 0;
+                        state.buffering = !this.state.castSession;
+                        return state;
+                    });
+                }
+
+                if(this.stateUpdater)
+                    clearInterval(this.stateUpdater);
+
+                /*eslint-disable */
+                if(this.state.castSession) {
+                    let request = new chrome.cast.media.LoadRequest(new chrome.cast.media.MediaInfo(`https://unacceptableuse.com/petify/song/${song.id}`, "audio/mpeg"));
+                    this.state.castSession.loadMedia(request).then(()=>console.log('Load succeed'), (errorCode)=>console.log('Error code: ' + errorCode));
+
+                    this.stateUpdater = setInterval(()=>{this.setState({elapsed: this.state.castSession.getMediaSession().getEstimatedTime()})}, 500); //todo
+                }else{
+                    this._audio.autoplay = true;
+                    this._audio.src = `https://unacceptableuse.com/petify/song/${song.id}`;
+                    this.stateUpdater = setInterval(()=>{this.setState({elapsed: this._audio.currentTime})}, 500);
+                }
+                /*eslint-enable */
                 if ('mediaSession' in navigator) {
                     /* eslint-disable-next-line */
                     navigator.mediaSession.metadata = new MediaMetadata({
@@ -133,12 +169,14 @@ export default class Player extends React.Component {
                     return song.forEach((s)=>this.controls.queueNext(s));
                 song.origin = "queue";
                 this.setState(state=>state.queue.unshift(song));
-
-
-
             },
             setIsOpen: (modalIsOpen, returnUrl = this.state.returnUrl)=>this.setState({modalIsOpen, returnUrl}),
             requestClose: ()=>this.setState({closeRequested: true, modalIsOpen: false}),
+            setCurrentUser: (user)=>{
+                //I hate myself
+                console.log(user);
+                this.setState({user})
+            }
         }
     }
 
@@ -152,21 +190,24 @@ export default class Player extends React.Component {
             localStorage.setItem("queue", JSON.stringify(this.state.queue));
     }
 
-    componentDidMount(){
-      // this._audio.src = "http://localhost:3000/api/v2/song/87026859-1ea0-4e21-9d8a-14279d09a584/play";
+    componentWillMount() {
+        //God this is fucking stupid jesus christ
+        if(window.localStorage && window.localStorage.getItem("key") != null){
+            console.log("Found login key");
+            axios.defaults.headers.common['Authorization'] = `Bearer ${window.localStorage.getItem("key")}`;
+            axios.get('http://localhost:3000/api/v2/user/me').then((res)=>{
+                this.controls.setCurrentUser(res.data);
+            }).catch((error)=>console.error(error));
+        }
+    }
 
+    componentDidMount(){
         this._audio.onstalled = ()=>this.setState({buffering: true});
 
         this._audio.onplaying = ()=>{
             this.setState({buffering: false});
-            if(this.stateUpdater)
-                clearInterval(this.stateUpdater);
-            this.stateUpdater = setInterval(()=>{this.setState({elapsed: this._audio.currentTime})}, 500);
         };
-        this._audio.onpause = ()=>{
-            if(this.stateUpdater)
-                clearInterval(this.stateUpdater);
-        };
+
         this._audio.ondurationchange = (() => {
             this.setState((state)=>{
                 const length = isNaN(this._audio.duration) ? 0 :this._audio.duration;
@@ -207,12 +248,6 @@ export default class Player extends React.Component {
             }
         };
 
-        if(this._audio.remote) {
-            this._audio.remote.onconnect = ()=>{this.setState({casting: true, castConnected: true})};
-            this._audio.remote.onconnecting = ()=>{this.setState({casting: true})};
-            this._audio.remote.ondisconnect = ()=>{this.setState({casting: false, castConnected: false})}
-        }
-
         if ('mediaSession' in navigator) {
             navigator.mediaSession.setActionHandler('play', this.controls.togglePlaying);
             navigator.mediaSession.setActionHandler('pause', this.controls.togglePlaying);
@@ -221,10 +256,45 @@ export default class Player extends React.Component {
             navigator.mediaSession.setActionHandler('seekbackward', ()=>this.controls.seekTrack(null, this.state.elapsed-10));
             navigator.mediaSession.setActionHandler('seekforward', ()=>this.controls.seekTrack(null, this.state.elapsed+10));
         }
+
+        window['__onGCastApiAvailable'] = (isAvailable) =>{
+            /* eslint-disable*/
+            if (isAvailable) {
+                cast.framework.CastContext.getInstance().setOptions({
+                    receiverApplicationId: chrome.cast.media.DEFAULT_MEDIA_RECEIVER_APP_ID,
+                    autoJoinPolicy: chrome.cast.AutoJoinPolicy.ORIGIN_SCOPED
+                });
+
+                cast.framework.CastContext.getInstance().addEventListener(cast.framework.CastContextEventType.CAST_STATE_CHANGED, (data)=>{
+                    if(data.castState === cast.framework.CastState.CONNECTED){
+                        let castPlayer = new cast.framework.RemotePlayer();
+                        let castController = new cast.framework.RemotePlayerController(castPlayer);
+
+                        this.setState({
+                            castPlayer,
+                            castController,
+                            castSession: cast.framework.CastContext.getInstance().getCurrentSession(),
+                        });
+
+                        if(this.state.playing){
+                            this._audio.pause();
+                            this.controls.playTrack(this.state.song, false, true);
+                            this.controls.seekTrack(null, this._audio.currentTime);
+                        }
+
+                    }else if(data.castState === cast.framework.CastState.NOT_CONNECTED){
+                        this.setState({castSession: null});
+                    }
+                })
+
+            }
+            /* eslint-enable */
+        };
     }
 
     render() {
         return (<PlayerContext.Provider value={{data: this.state, control: this.controls}}>
+            <Header/>
             <audio ref={(a)=>this._audio=a} crossOrigin="anonymous"/>
             <Sidebar/>
             {this.state.closeRequested && <Redirect to={this.state.returnUrl}>{this.setState({closeRequested: false})}</Redirect>}
@@ -238,6 +308,7 @@ export default class Player extends React.Component {
                     <Route path="/add" children={<Add/>}/>
                     <Route path={["/play/:id", "/play/:id/:seo"]} children={<StupidReact Target={Play}/>}/>
                     <Route path="/cast" children={<HomeController/>}/>
+                    <Route path="/login/:key" children={<LoginController setCurrentUser={this.controls.setCurrentUser}/>}/>
                     <Route path="/" children={<HomeController/>}/>
                 </Switch>
             </div>

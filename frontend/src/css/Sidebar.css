@@ -134,3 +134,14 @@
     0% {background-position: 0;}
     100% {background-position: 53%;}
 }
+
+
+google-cast-launcher {
+    width: 24px;
+    height: 26px;
+    display: inline-block !important;
+}
+
+:root {
+    --connected-color: #1ed760
+}

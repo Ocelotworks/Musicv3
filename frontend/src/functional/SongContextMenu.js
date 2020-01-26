@@ -25,7 +25,7 @@ export default class SongContextMenu extends React.Component {
 
     render() {
         if (this.state.redirect) {
-            {this.setState({redirect: null})}
+            this.setState({redirect: null});
             return <Redirect push to={this.state.redirect}/>;
         }
         return (<PlayerContext.Consumer>{(player)=>(

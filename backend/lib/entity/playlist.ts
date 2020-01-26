@@ -32,15 +32,19 @@ export default class Playlist{
         this.runtime = obj.runtime;
     }
 
-    static async getAll(page: number, songsPerPage: number = 50): Promise<Playlist[]>{
-        let query = App.getDB().select().from(Playlist.TABLE).innerJoin(User.TABLE, `${User.TABLE}.id`, `${Playlist.TABLE}.owner`).options({nestTables: true});
+    static async getAll(page: number, songsPerPage: number = 50, user: User = null): Promise<Playlist[]>{
+        let query = App.getDB().select().from(Playlist.TABLE).innerJoin(User.TABLE, `${User.TABLE}.id`, `${Playlist.TABLE}.owner`).where({private: false}).options({nestTables: true});
         if(page)
             query = query.offset(page*songsPerPage).limit(songsPerPage);
+        if(user !== null)
+            query = query.orWhere({owner: user.id});
         return (await query).map((obj)=>new Playlist(obj));
     }
 
+
+
     static async create(id): Promise<Playlist>{
-        const query = await (App.getDB().select().where({id, private: false}).from(Playlist.TABLE).limit(1));
+        const query = await (App.getDB().select().where({id}).from(Playlist.TABLE).limit(1));
         if(!query[0])
             return null;
         return new Playlist(query[0]);

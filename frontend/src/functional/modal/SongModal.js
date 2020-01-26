@@ -16,10 +16,7 @@ import {
     Edit,
     Delete
 } from "@material-ui/icons";
-import {Route, Router, Switch} from "react-router";
-import StupidReact from "../../presentational/pages/StupidReact";
-import Artist from "../pages/Artist";
-import Album from "../pages/Album";
+import {Route, Switch} from "react-router";
 import Related from "./song/Related";
 
 const links = [

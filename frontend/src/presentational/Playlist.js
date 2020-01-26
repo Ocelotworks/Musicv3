@@ -1,5 +1,3 @@
-import {ContextMenuTrigger} from "react-contextmenu";
-import {PlayerContext} from "../Context";
 import React from "react";
 import {Link} from "react-router-dom";
 import User from "./User";

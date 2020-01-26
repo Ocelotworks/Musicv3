@@ -6,7 +6,6 @@ import ContextMenuWrapper from "../../presentational/ContextMenuWrapper";
 import Button from "../../presentational/Button";
 import {PlayArrow, Shuffle} from "@material-ui/icons";
 import Song from "../../presentational/Song";
-import User from "../../presentational/User";
 
 /**
  *   ╔════   Copyright 2020 Peter Maguire
@@ -14,13 +13,15 @@ import User from "../../presentational/User";
  * ╚════ ║   (music3) Playlist
  *  ════╝
  */
-function shuffleArray(array) {
+function shuffleArray(originalArray) {
+    let array = [].concat(originalArray);
     for (let i = array.length - 1; i > 0; i--) {
         let j = Math.floor(Math.random() * (i + 1));
         let temp = array[i];
         array[i] = array[j];
         array[j] = temp;
     }
+    return array;
 }
 
 export default class Artist extends React.Component {
@@ -30,7 +31,7 @@ export default class Artist extends React.Component {
     constructor(props){
         super(props);
         let id = props.data.id;
-        document.title = `Artist | Petify`;
+        document.title = `Playlist | Petify`;
         axios.get(`http://localhost:3000/api/v2/playlist/${id}`).then((res)=>{
             document.title = `${res.data.name} | Petify`;
             this.setState(res.data)
@@ -50,11 +51,7 @@ export default class Artist extends React.Component {
                     <div>
                         <h2>{this.state.name}</h2>
                         <Button Icon={PlayArrow} text="Play" onClick={()=>{player.control.addToQueue(this.state.songs)}}/>
-                        <Button Icon={Shuffle} text="Shuffle" onClick={()=>{
-                            let songs =[].concat(this.state.songs);
-                            shuffleArray(songs);
-                            player.control.addToQueue(songs);
-                        }}/>
+                        <Button Icon={Shuffle} text="Shuffle" onClick={()=>{player.control.addToQueue(shuffleArray(this.state.songs))}}/>
                     </div>
                 </div>
                 <ul className='songList'>

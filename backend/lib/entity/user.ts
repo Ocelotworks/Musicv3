@@ -1,5 +1,7 @@
 import {App} from "../app";
 import Song from "./song";
+import apiKey from "./apiKey";
+import ApiKey from "./apiKey";
 
 export default class User {
     static TABLE = "users";
@@ -51,9 +53,25 @@ export default class User {
         return new User(query[0]);
     }
 
+    static async getFromAuthKey(key: String): Promise<User>{
+        const query = await (App.getDB().select().from(User.TABLE).where({'authkey': key}).limit(1));
+        if(!query[0])
+            return null;
+        return new User(query[0]);
+    }
+
     async getSongs(): Promise<Song[]> {
         const query = await (App.getDB().select().where({addedby: this.id}).from(Song.TABLE));
         return query.map((obj)=>new Song(obj));
+    }
+
+    async generateSessionKey(): Promise<ApiKey>{
+        let key = new ApiKey({
+            owner: this.id,
+            session: true,
+        });
+        await key.insert();
+        return key;
     }
 }
 

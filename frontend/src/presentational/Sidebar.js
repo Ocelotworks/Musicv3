@@ -116,7 +116,7 @@ export default function(){
                             {player.data.repeat === 1 ? <RepeatOne onClick={player.control.setRepeat} className="enabled"/> : <Repeat className={player.data.repeat > 1 ? "enabled" : ""}  onClick={player.control.setRepeat}/>}
                             <PlayCircleOutlineOutlined onClick={player.control.toggleAutoplay} className={player.data.autoplay ? "enabled" : ""}/>
                             <Shuffle onClick={player.control.toggleShuffle} className={player.data.shuffle ? "enabled" : ""}/>
-                            {player.data.castConnected ? <CastConnected onClick={player.control.toggleCasting} className="enabled"/> :<Cast onClick={player.control.toggleCasting} className={player.data.casting ? "enabled" : ""}/>}
+                            <google-cast-launcher/>
                         </div>
                         <Grid container spacing={2}>
                             <Grid item>

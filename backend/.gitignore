@@ -1,4 +1,4 @@
 *.js
 dist/
 /dist/
-config.json
+config/

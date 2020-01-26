@@ -6,7 +6,7 @@
  */
 
 import React from 'react';
-import {HomeContext, PlayerContext} from "../../Context";
+import {HomeContext} from "../../Context";
 import SongCarousel from "../SongCarousel";
 import '../../css/pages/Home.css';
 import ContextMenuWrapper from "../ContextMenuWrapper";

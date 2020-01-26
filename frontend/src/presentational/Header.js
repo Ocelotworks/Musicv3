@@ -20,6 +20,7 @@ import {
     Lock,
 } from "@material-ui/icons";
 import User from "./User";
+import {PlayerContext} from "../Context";
 
 const links = [
     {icon: Home, href: "/", name: "Home", exact: true},
@@ -35,13 +36,16 @@ const links = [
 ];
 
 export default function(){
-    return (<div id="topBar">
-        <span id="title">Petify</span>
-        {links.map((link)=><NavLink key={link.name} to={link.href} exact={link.exact || false} className="navLink"><link.icon/><div>{link.name}</div></NavLink>)}
+    return (<PlayerContext.Consumer>{player => (
+        <div id="topBar">
+            <span id="title">Petify</span>
+            {links.map((link)=><NavLink key={link.name} to={link.href} exact={link.exact || false} className="navLink"><link.icon/><div>{link.name}</div></NavLink>)}
 
-        <div id="topBarUserContainer">
-            <input type="text" id="search" placeholder="Search" autoComplete="false"/>
-            <User user={{id: "aa", username: "aabc", avatar: "https://placekitten.com/128/128", level: 100}}/>
-        </div>
-    </div>)
+            <div id="topBarUserContainer">
+
+                <input type="text" id="search" placeholder="Search" autoComplete="false"/>
+                {player.data.user ? <User user={player.data.user}/> : <div>Login bitch</div>}
+            </div>
+        </div>)}
+    </PlayerContext.Consumer>)
 }

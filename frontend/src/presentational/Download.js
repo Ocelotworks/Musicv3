@@ -1,7 +1,6 @@
 import User from "./User";
 import React from "react";
 import '../css/Download.css';
-import Button from "./Button";
 import {Delete, Replay} from "@material-ui/icons";
 
 /**

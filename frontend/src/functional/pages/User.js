@@ -1,7 +1,6 @@
 import * as React from "react";
 import axios from "axios";
 import Error from "../../presentational/Error";
-import {PlayerContext} from "../../Context";
 import ContextMenuWrapper from "../../presentational/ContextMenuWrapper";
 import Song from "../../presentational/Song";
 

@@ -42,8 +42,6 @@ export default function ModalContainer({setIsOpen, modalIsOpen, returnUrl, reque
         setIsOpen(false);
     }
 
-    console.log(returnUrl);
-
     return (
         <div>
             <Modal isOpen={modalIsOpen} onAfterOpen={afterOpenModal} onRequestClose={requestClose} style={customStyles} contentLabel="Modal">

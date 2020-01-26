@@ -7,7 +7,6 @@ import './css/App.css';
 function App() {
   return (
     <HashRouter>
-        <Header/>
         <Player/>
     </HashRouter>
   );
