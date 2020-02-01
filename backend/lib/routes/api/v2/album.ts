@@ -15,7 +15,9 @@ export default class Albums extends Route {
         this.router.get('/:id/image',  Middleware.getValidEntity(Album), async (req, res)=>{
             const image = await res.locals.album.getImage();
             if(image)
-                return res.end(image);
+                return res.header('Content-Type', 'image/png')
+                            .header("Cache-Control", "public, max-age=60000")
+                            .end(image);
             res.header('Content-Type', 'image/png')
                 .header("Cache-Control", "public, max-age=60000")
                 .redirect('/img/album.png');

@@ -82,6 +82,10 @@ export default class Player extends React.Component {
                     this.state.castController.playOrPause();
                 }else{
                     this._audio[!this.state.playing ? "play":"pause"]();
+                    if(this.state.playing && window.localStorage){
+                        window.localStorage.removeItem("song");
+                    }
+
                 }
                 /*eslint-enable*/
 
@@ -111,7 +115,11 @@ export default class Player extends React.Component {
                     })
                 }
             },
-            playTrack: (song, isHistory = false, isCast = false)=>{
+            playTrack: (song, isHistory = false, isCast = false, skipElapsedUpdate = false, origin = "shuffleQueue")=>{
+                if(this.state.song && this.state.song.id && this.state.elapsed > this.state.song.length/2){
+                    axios.put(`http://localhost:3000/api/v2/song/${this.state.song.id}/play?origin=${this.state.song.origin}`)
+                }
+
                 if(!isCast) {
                     this.setState((state) => {
                         if (state.song) {
@@ -121,9 +129,11 @@ export default class Player extends React.Component {
                                 state.history.push(state.song)
                             }
                         }
+                        song.origin = origin;
                         state.song = song;
                         state.playing = true;
-                        state.elapsed = 0;
+                        if(!skipElapsedUpdate)
+                            state.elapsed = 0;
                         state.buffering = !this.state.castSession;
                         return state;
                     });
@@ -134,14 +144,32 @@ export default class Player extends React.Component {
 
                 /*eslint-disable */
                 if(this.state.castSession) {
-                    let request = new chrome.cast.media.LoadRequest(new chrome.cast.media.MediaInfo(`https://unacceptableuse.com/petify/song/${song.id}`, "audio/mpeg"));
+                    let mediaInfo = new chrome.cast.media.MediaInfo(`https://unacceptableuse.com/petify/song/${song.id}`, "audio/mpeg");
+                    mediaInfo.metadata = new chrome.cast.media.MusicTrackMediaMetadata();
+                    mediaInfo.metadata.artist = song.artist.name;
+                    mediaInfo.metadata.songName = song.title;
+                    mediaInfo.metadata.title = song.title;
+                    mediaInfo.metadata.images = [new chrome.cast.Image(`https://unacceptableuse.com/petify/album/${song.albumID}`)];
+                    let request = new chrome.cast.media.LoadRequest(mediaInfo);
                     this.state.castSession.loadMedia(request).then(()=>console.log('Load succeed'), (errorCode)=>console.log('Error code: ' + errorCode));
 
-                    this.stateUpdater = setInterval(()=>{this.setState({elapsed: this.state.castSession.getMediaSession().getEstimatedTime()})}, 500); //todo
+                    this.stateUpdater = setInterval(()=>{
+                        if(!this.state.castSession)
+                            return clearInterval(this.stateUpdater);
+                        if(this.state.castSession.getMediaSession())
+                            this.setState({elapsed: this.state.castSession.getMediaSession().getEstimatedTime()});
+                        if(this.state.elapsed >= this.state.song.length)
+                            this.controls.nextTrack();
+                    }, 500); //todo
                 }else{
                     this._audio.autoplay = true;
                     this._audio.src = `https://unacceptableuse.com/petify/song/${song.id}`;
-                    this.stateUpdater = setInterval(()=>{this.setState({elapsed: this._audio.currentTime})}, 500);
+                    this.stateUpdater = setInterval(()=>{
+                        if(this._audio.currentTime % 5 < 1){
+                            this.saveCurrentSong();
+                        }
+                        this.setState({elapsed: this._audio.currentTime})
+                    }, 500);
                 }
                 /*eslint-enable */
                 if ('mediaSession' in navigator) {
@@ -180,6 +208,13 @@ export default class Player extends React.Component {
         }
     }
 
+    saveCurrentSong() {
+        if (!window.localStorage) return;
+
+        window.localStorage.setItem("playing", JSON.stringify({song: this.state.song, elapsed: this.state.elapsed}));
+    }
+
+
     componentDidUpdate(prevProps, prevState, snapshot) {
         if(this.state.volume <= 0){
             this._audio.volume = 0;
@@ -191,8 +226,9 @@ export default class Player extends React.Component {
     }
 
     componentWillMount() {
+        if(!window.localStorage)return;
         //God this is fucking stupid jesus christ
-        if(window.localStorage && window.localStorage.getItem("key") != null){
+        if(window.localStorage.getItem("key") != null){
             console.log("Found login key");
             axios.defaults.headers.common['Authorization'] = `Bearer ${window.localStorage.getItem("key")}`;
             axios.get('http://localhost:3000/api/v2/user/me').then((res)=>{
@@ -219,15 +255,31 @@ export default class Player extends React.Component {
             })
         });
 
-        if(window.localStorage && window.localStorage.getItem("queue") != null){
-            try {
-                let queue = JSON.parse(window.localStorage.getItem("queue"));
-                if(Array.isArray(queue))
-                    this.setState({queue});
-                else
+        if(window.localStorage){
+            if(window.localStorage.getItem("queue") != null) {
+                try {
+                    let queue = JSON.parse(window.localStorage.getItem("queue"));
+                    if (Array.isArray(queue))
+                        this.setState({queue});
+                    else
+                        window.localStorage.removeItem("queue")
+                } catch (e) {
                     window.localStorage.removeItem("queue")
-            }catch(e){
-                window.localStorage.removeItem("queue")
+                }
+            }
+
+            if(window.localStorage.getItem("playing") != null){
+                try {
+                    let playingData = JSON.parse(window.localStorage.getItem("playing"));
+                    this.setState({
+                        elapsed: playingData.elapsed
+                    });
+                    this._audio.currentTime = playingData.elapsed;
+                    this.controls.playTrack(playingData.song, false, false, true);
+                }catch(e){
+                    console.error(e);
+                    window.localStorage.removeItem("playing");
+                }
             }
         }
 
@@ -260,6 +312,7 @@ export default class Player extends React.Component {
         window['__onGCastApiAvailable'] = (isAvailable) =>{
             /* eslint-disable*/
             if (isAvailable) {
+                if(!cast)return;
                 cast.framework.CastContext.getInstance().setOptions({
                     receiverApplicationId: chrome.cast.media.DEFAULT_MEDIA_RECEIVER_APP_ID,
                     autoJoinPolicy: chrome.cast.AutoJoinPolicy.ORIGIN_SCOPED

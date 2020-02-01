@@ -68,13 +68,41 @@ export default class Song{
         return (await query).map((obj)=>new Song(obj));
     }
 
-    static async getLastAdded(count: number = 6): Promise<Song[]>{
+    static async getLastAdded(count: number = 6, offset = 0): Promise<Song[]>{
         let query = App.getDB()
             .select(App.getDB().raw("songs.*, artists.name AS 'artistName'"))
             .from(Song.TABLE)
             .limit(count)
             .orderBy("timestamp", "DESC")
             .innerJoin("artists", "artists.id", "songs.artist");
+        if(offset > 0){
+          query = query.offset(offset);
+        }
+        return (await query).map((obj)=>new Song(obj));
+    }
+
+    static async getRecommended(user: User): Promise<Song[]>{
+        let query;
+        if(!user) {
+            query = App.getDB()
+                .select(App.getDB().raw("songs.*, artists.name AS 'artistName'"))
+                .from(Song.TABLE)
+                .orderByRaw("RAND()")
+                .innerJoin("artists", "artists.id", "songs.artist")
+                .innerJoin("albums", "albums.id", "songs.album")
+                .whereNotNull("albums.image")
+                .limit(6);
+        }else{
+            query = App.getDB()
+                .select(App.getDB().raw("songs.*, artists.name AS 'artistName'"))
+                .from(Song.TABLE)
+                .orderByRaw("RAND()")
+                .innerJoin("artists", "artists.id", "songs.artist")
+                .innerJoin("votes", "songs.id", "votes.song")
+                .where({"votes.up": 1, "votes.owner": user.id})
+                .limit(6);
+        }
+
         return (await query).map((obj)=>new Song(obj));
     }
 
@@ -138,6 +166,13 @@ export default class Song{
     getRelated(): Promise<SongRelations[]> {
         return SongRelations.getForSong(this);
     }
+
+    async delete(){
+        let query = App.getDB().delete().from(Song.TABLE).where({id: this.id}).limit(1);
+
+
+    }
+
 
     async getTotalPlays(user: User = null): Promise<Number>{
         if(user === null && this.plays != undefined){

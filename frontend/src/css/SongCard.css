@@ -23,6 +23,8 @@
     transition: border 0.3s;
     width: 225px;
     height: 225px;
+    background: url('http://localhost:3000/img/album.png');
+    background-size: contain;
 }
 
 .songCard:hover {

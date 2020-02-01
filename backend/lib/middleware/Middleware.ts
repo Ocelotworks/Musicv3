@@ -40,14 +40,14 @@ export default class Middleware{
     }
 
 
-    static requireOwner(Entity, owner = "ownerID"){
+    static requireOwner(Entity, owner = "ownerID", userLevelOverride = UserLevel.ADMIN){
         return function(req, res, next){
             let entityName = Entity.name.toLowerCase();
             let entity = res.locals[entityName];
             if(entity.private === false)
                 return next();
             console.log(entity);
-            if(res.locals.loggedInUser && entity[owner] && entity[owner] === res.locals.user.id)
+            if(res.locals.loggedInUser && (res.locals.loggedInUser.level >= userLevelOverride || entity[owner] && entity[owner] === res.locals.user.id))
                 return next();
 
             res.status(404).json({error: "No Such Entity"});

@@ -18,7 +18,7 @@ export default function(){
             home => (<>
                 <ContextMenuWrapper/>
                 <h1>Recommended</h1>
-                <SongCarousel songs={home.recent} class='homeCarousel'/>
+                <SongCarousel songs={home.recommended} isRecommended={true} class='homeCarousel'/>
                 <h1>Latest Additions</h1>
                 <SongCarousel songs={home.recent} class='homeCarousel'/>
             </>)
