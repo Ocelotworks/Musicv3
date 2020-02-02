@@ -22,14 +22,15 @@ import Related from "./song/Related";
 const links = [
     {icon: PlaylistPlay, href: "playlists", name: "Playlists"},
     {icon: LinkIcon, href: "related", name: "Related"},
-    {icon: Edit, href: "edit", name: "Edit"},
-    {icon: Delete, href: "delete", name: "Delete"},
+    {icon: Edit, href: "edit", name: "Edit", requireHeader: "PATCH", className: "gold"},
+    {icon: Delete, href: "delete", name: "Delete", requireHeader: "DELETE", className: "red"},
 ];
 
 
 export default class SongModal extends React.Component {
     state = {
         song: null,
+        allowedHeaders: [],
     };
 
     currentUrl = "";
@@ -47,11 +48,10 @@ export default class SongModal extends React.Component {
             })
         });
 
-        // axios.get(`http://localhost:3000/api/v2/artist/${id}/songs`).then((res)=>{
-        //     this.setState({
-        //         songs: res.data,
-        //     })
-        // })
+        axios.options(`http://localhost:3000/api/v2/song/${id}`).then((res)=>{
+            if(!res.headers.allow)return;
+            this.setState({allowHeaders: res.headers["allow"].split(", ")});
+        });
     }
 
     render() {
@@ -75,7 +75,7 @@ export default class SongModal extends React.Component {
                 </div>
             </div>
             <div id="songModalNav">
-                {links.map((link)=><NavLink key={link.name} to={this.currentUrl+link.href} exact={link.exact || false} className="navLink"><link.icon/><div>{link.name}</div></NavLink>)}
+                {links.filter((link)=>!link.requireHeader||this.state.allowHeaders.includes(link.requireHeader)).map((link)=><NavLink key={link.name} to={this.currentUrl+link.href} exact={link.exact || false} className={"navLink "+(link.className || "")}><link.icon/><div>{link.name}</div></NavLink>)}
             </div>
             <div id="songModalTabContainer">
                 <Switch>

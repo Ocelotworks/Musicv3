@@ -61,7 +61,6 @@ export default function ModalContainer({setIsOpen, modalIsOpen, returnUrl, reque
 
 
 function SwitchModal({switchModal, condition}){
-    console.log(switchModal, condition);
     if(condition)
         switchModal();
     return (<></>)

@@ -77,21 +77,19 @@ export default class Player extends React.Component {
             togglePlaying: ()=>{
                 /*eslint-disable */
                 if(this.state.castSession) {
-                    console.log("Casty shit");
-                    console.log(this.state.castController);
                     this.state.castController.playOrPause();
                 }else{
                     this._audio[!this.state.playing ? "play":"pause"]();
-                    if(this.state.playing && window.localStorage){
-                        window.localStorage.removeItem("song");
-                    }
-
                 }
                 /*eslint-enable*/
 
                 this.setState({
                     playing: !this.state.playing,
                 });
+
+                if(window.localStorage){
+                    this.saveCurrentSong();
+                }
             },
             toggleAutoplay: this.toggleValue("autoplay"),
             toggleShuffle: this.toggleValue("shuffle"),
@@ -211,7 +209,7 @@ export default class Player extends React.Component {
     saveCurrentSong() {
         if (!window.localStorage) return;
 
-        window.localStorage.setItem("playing", JSON.stringify({song: this.state.song, elapsed: this.state.elapsed}));
+        window.localStorage.setItem("playing", JSON.stringify({song: this.state.song, elapsed: this.state.elapsed, playing: this.state.playing}));
     }
 
 
@@ -276,6 +274,10 @@ export default class Player extends React.Component {
                     });
                     this._audio.currentTime = playingData.elapsed;
                     this.controls.playTrack(playingData.song, false, false, true);
+                    this.setState({playing: playingData.playing});
+                    if(!playingData.playing) {
+                        this._audio.pause()
+                    }
                 }catch(e){
                     console.error(e);
                     window.localStorage.removeItem("playing");
