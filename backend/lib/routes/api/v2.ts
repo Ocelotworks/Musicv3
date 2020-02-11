@@ -5,15 +5,13 @@ import Artists from "./v2/artist";
 import Playlists from "./v2/playlist";
 import User from "./v2/user";
 import Downloads from "./v2/download";
+import Radios from "./v2/radio";
+
+const routes = [Songs, Albums, Artists, Playlists, User, Downloads, Radios];
 
 export default class v2 extends Route{
     createRoutes() {
-        new Songs(this.app, this.router);
-        new Albums(this.app, this.router);
-        new Artists(this.app, this.router);
-        new Playlists(this.app, this.router);
-        new User(this.app, this.router);
-        new Downloads(this.app, this.router);
+        routes.forEach((Route)=>new Route(this.app, this.router));
     }
 
     getBase(): string {
