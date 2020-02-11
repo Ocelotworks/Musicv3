@@ -77,4 +77,8 @@
      margin-right: 25px;
      bottom: 14px;
      position: relative;
+     background: rgba(0,0,0,0.5);
+     color: white;
+     border: 1px solid black;
+     padding: 5px;
  }
