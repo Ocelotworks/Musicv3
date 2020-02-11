@@ -13,6 +13,7 @@
   "author": "",
   "license": "ISC",
   "devDependencies": {
+    "@types/youtube-dl": "^1.12.2",
     "source-map-support": "^0.5.16"
   },
   "dependencies": {
@@ -21,6 +22,7 @@
     "cors": "latest",
     "passport": "^0.4.1",
     "passport-google-oauth20": "^2.0.0",
-    "short-uuid": "^3.1.1"
+    "short-uuid": "^3.1.1",
+    "youtube-dl": "latest"
   }
 }

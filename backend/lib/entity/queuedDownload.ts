@@ -22,7 +22,8 @@ export default class QueuedDownload{
     private album: Album;
     private playlist: Playlist;
 
-    constructor(obj){
+    constructor(obj?){
+        if(!obj)return;
         if(obj.artists){
             this.artist = new Artist(obj.artists);
             this.album = new Album(obj.albums);
@@ -69,6 +70,19 @@ export default class QueuedDownload{
         return this.playlist = await Playlist.create(this.playlistID);
     }
 
+    asOriginal(){
+        return {
+            url: this.url,
+            destination: this.destination,
+            user: this.userID,
+            artist: this.artistID,
+            title: this.title,
+            album: this.albumID,
+            playlist: this.playlistID,
+            status: this.status
+        }
+    }
+
     async getOwner(): Promise<User> {
         if(this.owner)
             return this.owner;
@@ -93,6 +107,23 @@ export default class QueuedDownload{
         if(page)
             query = query.offset(page*songsPerPage).limit(songsPerPage);
         return (await query).map((obj)=>new QueuedDownload(obj));
+    }
+
+
+    static async getNextWaitingDownload(): Promise<QueuedDownload>{
+        let query = App.getDB().select().from(QueuedDownload.TABLE).whereNotIn("status", [DownloadStatus.FAILED, DownloadStatus.DUPLICATE, DownloadStatus.PROCESSING]).limit(1);
+        let result = await query;
+        if(!result[0])
+            return null;
+        return new QueuedDownload(result[0]);
+    }
+
+    async insert(){
+        return (App.getDB().insert(this.asOriginal()).into(QueuedDownload.TABLE))
+    }
+
+    async update(){
+        return (App.getDB().update(this.asOriginal()).into(QueuedDownload.TABLE).where({id: this.id}).limit(1))
     }
 }
 

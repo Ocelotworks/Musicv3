@@ -13,7 +13,7 @@ import Song from "../../presentational/Song";
 export default class User extends React.Component {
     state = {
         user: {},
-        songs: [],
+        songs: null,
     };
 
     constructor(props){
@@ -42,7 +42,7 @@ export default class User extends React.Component {
                     </div>
                 </div>
                 <ul className='songList'>
-                    {this.state.songs.map((song)=> <Song song={song} key={song.id}/>)}
+                    {this.state.songs ? this.state.songs.length > 0 ? this.state.songs.map((song)=> <Song song={song} key={song.id}/>) : <div>This user has not uploaded any songs.</div> : <div>Loading...</div>}
                 </ul>
             </>);
     }

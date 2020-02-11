@@ -103,8 +103,8 @@ export default function(){
                         <Link className="nowPlayingArtist" to={`/artist/${player.data.song ? player.data.song.artist.id : ""}`}>{player.data.song.artist.name || "Νοbody"}</Link>
                     </div>
                     <div className="sidebarElement" id="trackProgress">
-                        {formatTime(player.data.elapsed)}/{formatTime(player.data.song.length)}
-                        <TrackSlider value={(player.data.elapsed/player.data.song.length)*100} className={player.data.buffering ? "buffering" : ""} onChange={player.control.seekTrack}/>
+                        {formatTime(player.data.elapsed)}/{formatTime(player.data.song.duration)}
+                        <TrackSlider value={(player.data.elapsed/player.data.song.duration)*100} className={player.data.buffering ? "buffering" : ""} onChange={player.control.seekTrack}/>
                     </div>
                     <div className="sidebarElement" id="controls">
                         <div id="primaryControls">

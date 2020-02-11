@@ -106,13 +106,15 @@ export default class Song{
         return (await query).map((obj)=>new Song(obj));
     }
 
-    static async getByUser(user: User): Promise<Song[]>{
+    static async getByUser(user: User, page: number, songsPerPage: number = 50): Promise<Song[]>{
         let query = App.getDB()
             .select(App.getDB().raw("songs.*, artists.name AS 'artistName'"))
             .from(Song.TABLE)
             .orderBy("timestamp", "DESC")
             .innerJoin("artists", "artists.id", "songs.artist")
-            .where({addedby: user.id});
+            .where({addedby: user.id})
+            .limit(songsPerPage)
+            .offset(songsPerPage*page);
         return (await query).map((obj)=>new Song(obj));
     }
 

@@ -17,7 +17,7 @@ export default class Users extends Route {
 
         this.router.get('/me', Middleware.requireAuthentication, (req, res)=>res.json(res.locals.user));
         this.router.get('/:id', Middleware.getValidEntity(User), (req, res)=>res.json(res.locals.user));
-        this.router.get('/:id/songs', Middleware.getValidEntity(User), async (req, res)=>res.json(await Song.getByUser(res.locals.user)));
+        this.router.get('/:id/songs', Middleware.getValidEntity(User), async (req, res)=>res.json(await Song.getByUser(res.locals.user, req.query.page)));
     }
 
     getBase(): string {

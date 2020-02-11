@@ -32,7 +32,7 @@ export default class Player extends React.Component {
                 name: "Nobody",
                 id: ""
             },
-            length: 0,
+            duration: 0,
         },
         volume: 100,
         elapsed: 0,
@@ -62,7 +62,7 @@ export default class Player extends React.Component {
         super(props);
         this.controls = {
             seekTrack: (event, seek)=>{
-                const elapsed = this.state.song.length * (seek/100);
+                const elapsed = this.state.song.duration * (seek/100);
                 console.log("Seeking to ", elapsed);
                 if(this.state.castSession){
                     this.state.castSession.getMediaSession().seek({currentTime: elapsed}, console.log, console.error);
@@ -114,7 +114,7 @@ export default class Player extends React.Component {
                 }
             },
             playTrack: (song, isHistory = false, isCast = false, skipElapsedUpdate = false, origin = "shuffleQueue")=>{
-                if(this.state.song && this.state.song.id && this.state.elapsed > this.state.song.length/2){
+                if(this.state.song && this.state.song.id && this.state.elapsed > this.state.song.duration/2){
                     axios.put(`http://localhost:3000/api/v2/song/${this.state.song.id}/play?origin=${this.state.song.origin}`)
                 }
 
@@ -156,7 +156,7 @@ export default class Player extends React.Component {
                             return clearInterval(this.stateUpdater);
                         if(this.state.castSession.getMediaSession())
                             this.setState({elapsed: this.state.castSession.getMediaSession().getEstimatedTime()});
-                        if(this.state.elapsed >= this.state.song.length)
+                        if(this.state.elapsed >= this.state.song.duration-1) //Cast doesnt reach the exact end of the song so fuck it
                             this.controls.nextTrack();
                     }, 500); //todo
                 }else{
@@ -246,7 +246,7 @@ export default class Player extends React.Component {
             this.setState((state)=>{
                 const length = isNaN(this._audio.duration) ? 0 :this._audio.duration;
                 if(state.song)
-                    state.song.length = length;
+                    state.song.duration = length;
                 else
                     state.song = {length};
                 return state
