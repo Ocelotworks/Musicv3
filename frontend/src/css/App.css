@@ -54,5 +54,18 @@
 
 .react-contextmenu .react-contextmenu-item:not(:last-of-type){
     border-bottom: 1px solid #101011;
+}
 
+
+.errorMessageContainer {
+    width: 30%;
+    margin: 35vh auto 0;
+    background: rgba(255,0,0,0.2);
+    border: 1px solid red;
+    padding: 20px;
+}
+
+.errorMessageContainer h1{
+    border-bottom-color: rgba(255,0,0,0.3);
+    width: 80%;
 }

@@ -14,6 +14,8 @@ import {PlayArrow, Shuffle} from "@material-ui/icons";
 import {PlayerContext} from "../../Context";
 import ContextMenuWrapper from "../../presentational/ContextMenuWrapper";
 import Error from "../../presentational/Error";
+import Radio from "../../presentational/Radio";
+import StandardLoader from "../../presentational/StandardLoader";
 
 function shuffleArray(array) {
     for (let i = array.length - 1; i > 0; i--) {
@@ -75,9 +77,7 @@ export default class Album extends React.Component {
                     </div>
                 </div>
                 <ul className='songList'>
-                    {this.state.songs.map((song)=>{
-                        return <Song key={song.id} song={song}/>
-                    })}
+                    <StandardLoader array={this.state.songs} mapFunction={(song)=><Song key={song.id} song={song}/>} noneText="This album has no songs. Somehow."/>
                 </ul>
             </>
         )}</PlayerContext.Consumer>);

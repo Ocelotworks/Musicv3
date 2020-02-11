@@ -21,6 +21,7 @@ import Add from "./pages/Add";
 import LoginController from "../presentational/LoginController";
 import Header from "../presentational/Header";
 import axios from "axios";
+import Radios from "./pages/Radios";
 
 export default class Player extends React.Component {
     state = {
@@ -359,6 +360,7 @@ export default class Player extends React.Component {
                     <Route path="/album/:id" children={<StupidReact Target={Album}/>}/>
                     <Route path="/playlist/:id" children={<StupidReact Target={Playlist}/>}/>
                     <Route path="/playlist" children={<Playlists/>}/>
+                    <Route path="/radio" children={<Radios/>}/>
                     <Route path="/user/:id" children={<StupidReact Target={User}/>}/>
                     <Route path="/add" children={<Add/>}/>
                     <Route path={["/play/:id", "/play/:id/:seo"]} children={<StupidReact Target={Play}/>}/>

@@ -11,6 +11,8 @@ import Playlist from "../../presentational/Playlist";
 import '../../css/pages/Playlists.css';
 import {PlaylistAdd, Visibility, VisibilityOff} from "@material-ui/icons";
 import Button from "../../presentational/Button";
+import StandardLoader from "../../presentational/StandardLoader";
+import Radio from "../../presentational/Radio";
 
 
 export default class Playlists extends React.Component {
@@ -36,9 +38,9 @@ export default class Playlists extends React.Component {
             <div>
                 <h1>Playlists</h1>
                 <Button Icon={PlaylistAdd} text="New"/><Button Icon={this.state.viewPrivate ? Visibility : VisibilityOff} text={this.state.viewPrivate ? "View All" : "View Private"} onClick={()=>this.setState({viewPrivate: !this.state.viewPrivate})}/>
-            <ul className='playlistList'>
-                {this.state.playlists.filter((playlist)=>!this.state.viewPrivate || playlist.private).map((playlist)=><Playlist playlist={playlist}/>)}
-            </ul>
+                <ul className='playlistList'>
+                    <StandardLoader array={this.state.playlists.filter((playlist)=>!this.state.viewPrivate || playlist.private)} mapFunction={(playlist)=><Playlist playlist={playlist}/>} noneText={this.state.viewPrivate ? "No private playlists. You've got nothing to hide, huh?" : "There are no Playlists yet (that you can see)."}/>
+                </ul>
         </div>);
     }
 }

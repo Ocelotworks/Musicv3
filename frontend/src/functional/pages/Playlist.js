@@ -6,6 +6,7 @@ import ContextMenuWrapper from "../../presentational/ContextMenuWrapper";
 import Button from "../../presentational/Button";
 import {PlayArrow, Shuffle} from "@material-ui/icons";
 import Song from "../../presentational/Song";
+import StandardLoader from "../../presentational/StandardLoader";
 
 /**
  *   ╔════   Copyright 2020 Peter Maguire
@@ -55,9 +56,7 @@ export default class Artist extends React.Component {
                     </div>
                 </div>
                 <ul className='songList'>
-                    {this.state.songs.map((song)=>{
-                        return <Song song={song} key={song.id}/>
-                    })}
+                    <StandardLoader array={this.state.songs} mapFunction={(song)=><Song key={song.id} song={song}/>} noneText="This Artist has no songs. How did this happen?"/>
                 </ul>
             </>
         )}</PlayerContext.Consumer>);

@@ -3,6 +3,7 @@ import axios from "axios";
 import Error from "../../presentational/Error";
 import ContextMenuWrapper from "../../presentational/ContextMenuWrapper";
 import Song from "../../presentational/Song";
+import StandardLoader from "../../presentational/StandardLoader";
 
 /**
  *   ╔════   Copyright 2020 Peter Maguire
@@ -42,7 +43,7 @@ export default class User extends React.Component {
                     </div>
                 </div>
                 <ul className='songList'>
-                    {this.state.songs ? this.state.songs.length > 0 ? this.state.songs.map((song)=> <Song song={song} key={song.id}/>) : <div>This user has not uploaded any songs.</div> : <div>Loading...</div>}
+                    <StandardLoader array={this.state.songs} mapFunction={(song)=><Song key={song.id} song={song}/>} noneText="This user has not uploaded any songs."/>
                 </ul>
             </>);
     }
