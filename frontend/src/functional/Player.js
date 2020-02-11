@@ -22,6 +22,19 @@ import LoginController from "../presentational/LoginController";
 import Header from "../presentational/Header";
 import axios from "axios";
 import Radios from "./pages/Radios";
+import Radio from "./pages/Radio";
+
+function shuffleArray(originalArray) {
+    let array = [].concat(originalArray);
+    for (let i = array.length - 1; i > 0; i--) {
+        let j = Math.floor(Math.random() * (i + 1));
+        let temp = array[i];
+        array[i] = array[j];
+        array[j] = temp;
+    }
+    return array;
+}
+
 
 export default class Player extends React.Component {
     state = {
@@ -53,6 +66,8 @@ export default class Player extends React.Component {
         closeRequested: false,
         returnUrl: "/",
         user: null,
+        radio: null,
+        radioIncrement: 0,
     };
 
     toggleValue(value){
@@ -106,6 +121,17 @@ export default class Player extends React.Component {
                 }
                 if(this.state.queue.length > 0){
                     this.controls.playTrack(this.state.queue.shift());
+
+                    if(this.state.radio && this.state.queue.length < 5){
+                        axios.get(`http://localhost:3000/api/v2/radio/${this.state.radio.id}/songs?page=${this.state.radioIncrement}`).then((res)=>{
+                            this.controls.shuffleToQueue(res.data);
+                            if(!res.data || res.data.length === 0)
+                                this.setState({radioIncrement: 2});
+                            else
+                                this.setState({radioIncrement: this.state.radioIncrement+1});
+                        }).catch((error)=>console.error(error));
+                    }
+
                 }else if(this.state.shuffleQueue.length > 0){
                     this.controls.playTrack(this.state.shuffleQueue.shift());
                 }else{
@@ -189,7 +215,9 @@ export default class Player extends React.Component {
                     return song.forEach((s)=>this.controls.addToQueue(s));
                 song.origin = "queue";
                 this.setState(state=>state.queue.push(song));
-
+            },
+            shuffleToQueue: (song)=>{
+                this.controls.addToQueue(shuffleArray(song));
             },
             queueNext: (song)=>{
                 if (Array.isArray(song))
@@ -201,8 +229,16 @@ export default class Player extends React.Component {
             requestClose: ()=>this.setState({closeRequested: true, modalIsOpen: false}),
             setCurrentUser: (user)=>{
                 //I hate myself
-                console.log(user);
                 this.setState({user})
+            },
+            setRadio: (radio)=>{
+                this.controls.clearQueue();
+                this.setState({radio, radioIncrement: 2});
+                if(!radio)return;
+                axios.get(`http://localhost:3000/api/v2/radio/${radio.id}/songs`).then((res)=>{
+                    this.controls.shuffleToQueue(res.data);
+                    this.controls.nextTrack();
+                }).catch((error)=>console.error(error));
             }
         }
     }
@@ -210,7 +246,7 @@ export default class Player extends React.Component {
     saveCurrentSong() {
         if (!window.localStorage) return;
 
-        window.localStorage.setItem("playing", JSON.stringify({song: this.state.song, elapsed: this.state.elapsed, playing: this.state.playing}));
+        window.localStorage.setItem("playing", JSON.stringify({song: this.state.song, elapsed: this.state.elapsed, playing: this.state.playing, radio: this.state.radio, radioIncrement: this.state.radioIncrement}));
     }
 
 
@@ -275,7 +311,7 @@ export default class Player extends React.Component {
                     });
                     this._audio.currentTime = playingData.elapsed;
                     this.controls.playTrack(playingData.song, false, false, true);
-                    this.setState({playing: playingData.playing});
+                    this.setState({playing: playingData.playing, radio: playingData.radio, radioIncrement: playingData.radioIncrement});
                     if(!playingData.playing) {
                         this._audio.pause()
                     }
@@ -360,6 +396,7 @@ export default class Player extends React.Component {
                     <Route path="/album/:id" children={<StupidReact Target={Album}/>}/>
                     <Route path="/playlist/:id" children={<StupidReact Target={Playlist}/>}/>
                     <Route path="/playlist" children={<Playlists/>}/>
+                    <Route path="/radio/:id" children={<StupidReact Target={Radio}/>}/>
                     <Route path="/radio" children={<Radios/>}/>
                     <Route path="/user/:id" children={<StupidReact Target={User}/>}/>
                     <Route path="/add" children={<Add/>}/>

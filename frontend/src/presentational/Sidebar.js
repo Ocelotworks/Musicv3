@@ -24,7 +24,7 @@ import {
     PlaylistAdd,
     ArrowDropUp,
     ArrowDropDown,
-    Info,
+    Info, Radio,
 } from '@material-ui/icons';
 import Slider from '@material-ui/core/Slider';
 import {withStyles} from '@material-ui/core/styles';
@@ -130,10 +130,15 @@ export default function(){
                             </Grid>
                         </Grid>
                     </div>
+                    <div className={`sidebarElement ${!player.data.radio ? "hidden" : ""}`} id="currentRadio">
+                    {
+                        player.data.radio ? <Link to={`/radio/${player.data.radio.id}`}><Radio/>{player.data.radio.name}</Link> : ""
+                    }
+                    </div>
                     <div className="sidebarElement" id="queue">
                         <div id="queueHeader">
-                            <span>Queue ({player.data.queue.length})</span>
-                            <div>
+                            <span>{player.data.radio ? 'Queue' : `Queue (${player.data.queue.length})`}</span>
+                            <div className={player.data.radio ? "hidden" : ""}>
                                 <PlaylistAdd onClick={player.control.saveQueue}/>
                                 <Delete onClick={player.control.clearQueue}/>
                             </div>

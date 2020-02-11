@@ -1,8 +1,8 @@
 import User from "./user";
-import Artist from "./artist";
-import Album from "./album";
-import Playlist from "./playlist";
 import {App} from "../app";
+import RadioFilter from "./radioFilter";
+import Song from "./song";
+import {QueryInterface} from "knex";
 
 export default class Radio {
 
@@ -45,6 +45,13 @@ export default class Radio {
         if(page)
             query = query.offset(page*songsPerPage).limit(songsPerPage);
         return (await query).map((obj)=>new Radio(obj));
+    }
+
+    async getSongs(page: number = 1): Promise<Song[]>{
+        let filters = await RadioFilter.getForRadio(this);
+        let query = App.getDB().select().from(Song.TABLE).innerJoin("artists", "artists.id", "songs.artist").limit(50).offset(50*(page-1)).options({nestTables: true});
+        filters.forEach((filter)=>query = filter.constructQuery(query));
+        return (await query).map((obj)=>new Song(obj));
     }
 
 }

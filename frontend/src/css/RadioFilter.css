@@ -1,0 +1,55 @@
+.filterList {
+    list-style: none;
+    padding: 0;
+}
+
+.radioFilter {
+    padding: 10px;
+    background: rgba(0,0,0,0.3);
+    margin-bottom: 15px;
+    position: relative;
+}
+
+.radioFilter.include:before {
+    content: "+ INCLUDES";
+    color: #0ffd0f;
+}
+
+
+.radioFilter:before {
+    position: absolute;
+    top: -9px;
+    font-variant: small-caps;
+    font-size: 12px;
+    font-weight: bolder;
+}
+
+.radioFilter.exclude:before {
+    content: "- EXCLUDES";
+    color: #ff1927;
+}
+
+.radioFilter.or.include:before {
+    content: "OR INCLUDES"
+}
+
+.radioFilter.or.exclude:before {
+    content: "OR EXCLUDES"
+}
+
+.radioFilter.dj:before{
+    content: "";
+}
+
+.radioFilter.dj {
+    color: gold;
+}
+
+.playlistInfo > a {
+    color: grey;
+    cursor: pointer;
+}
+
+.playlistInfo > a:hover {
+    color: white;
+}
