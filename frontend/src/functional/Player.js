@@ -23,17 +23,12 @@ import Header from "../presentational/Header";
 import axios from "axios";
 import Radios from "./pages/Radios";
 import Radio from "./pages/Radio";
+import DefaultPlayerHandler from "../playerHandlers/DefaultPlayerHandler";
+import RadioPlayerHandler from "../playerHandlers/RadioPlayerHandler";
+import ChromecastPlayerHandler from "../playerHandlers/ChromecastPlayerHandler";
 
-function shuffleArray(originalArray) {
-    let array = [].concat(originalArray);
-    for (let i = array.length - 1; i > 0; i--) {
-        let j = Math.floor(Math.random() * (i + 1));
-        let temp = array[i];
-        array[i] = array[j];
-        array[j] = temp;
-    }
-    return array;
-}
+
+
 
 
 export default class Player extends React.Component {
@@ -76,171 +71,7 @@ export default class Player extends React.Component {
 
     constructor(props){
         super(props);
-        this.controls = {
-            seekTrack: (event, seek)=>{
-                const elapsed = this.state.song.duration * (seek/100);
-                console.log("Seeking to ", elapsed);
-                if(this.state.castSession){
-                    this.state.castSession.getMediaSession().seek({currentTime: elapsed}, console.log, console.error);
-                    this.state.castController.seek();
-                }else{
-                    this._audio.currentTime = elapsed;
-                }
-
-                this.setState({elapsed})
-            },
-            setVolume: (event, volume)=>this.setState({volume}),
-            togglePlaying: ()=>{
-                /*eslint-disable */
-                if(this.state.castSession) {
-                    this.state.castController.playOrPause();
-                }else{
-                    this._audio[!this.state.playing ? "play":"pause"]();
-                }
-                /*eslint-enable*/
-
-                this.setState({
-                    playing: !this.state.playing,
-                });
-
-                if(window.localStorage){
-                    this.saveCurrentSong();
-                }
-            },
-            toggleAutoplay: this.toggleValue("autoplay"),
-            toggleShuffle: this.toggleValue("shuffle"),
-            toggleCasting: this.toggleValue("casting"),
-            setRepeat: ()=>this.setState({repeat: (this.state.repeat + 1) % 3, repeatNow: this.state.repeat <= 1}),
-            previousTrack: ()=>{
-                if(this.state.history.length > 0)
-                    this.controls.playTrack(this.state.history.pop(), true);
-            },
-            nextTrack: ()=>{
-                if(this.state.repeat){
-                    this.setState({repeatNow: true})
-                }
-                if(this.state.queue.length > 0){
-                    this.controls.playTrack(this.state.queue.shift());
-
-                    if(this.state.radio && this.state.queue.length < 5){
-                        axios.get(`http://localhost:3000/api/v2/radio/${this.state.radio.id}/songs?page=${this.state.radioIncrement}`).then((res)=>{
-                            this.controls.shuffleToQueue(res.data);
-                            if(!res.data || res.data.length === 0)
-                                this.setState({radioIncrement: 2});
-                            else
-                                this.setState({radioIncrement: this.state.radioIncrement+1});
-                        }).catch((error)=>console.error(error));
-                    }
-
-                }else if(this.state.shuffleQueue.length > 0){
-                    this.controls.playTrack(this.state.shuffleQueue.shift());
-                }else{
-                    this.setState({
-                        playing: false,
-                    })
-                }
-            },
-            playTrack: (song, isHistory = false, isCast = false, skipElapsedUpdate = false, origin = "shuffleQueue")=>{
-                if(this.state.song && this.state.song.id && this.state.elapsed > this.state.song.duration/2){
-                    axios.put(`http://localhost:3000/api/v2/song/${this.state.song.id}/play?origin=${this.state.song.origin}`)
-                }
-
-                if(!isCast) {
-                    this.setState((state) => {
-                        if (state.song) {
-                            if (isHistory) {
-                                state[song.origin || "shuffleQueue"].unshift(state.song);
-                            } else {
-                                state.history.push(state.song)
-                            }
-                        }
-                        song.origin = origin;
-                        state.song = song;
-                        state.playing = true;
-                        if(!skipElapsedUpdate)
-                            state.elapsed = 0;
-                        state.buffering = !this.state.castSession;
-                        return state;
-                    });
-                }
-
-                if(this.stateUpdater)
-                    clearInterval(this.stateUpdater);
-
-                /*eslint-disable */
-                if(this.state.castSession) {
-                    let mediaInfo = new chrome.cast.media.MediaInfo(`https://unacceptableuse.com/petify/song/${song.id}`, "audio/mpeg");
-                    mediaInfo.metadata = new chrome.cast.media.MusicTrackMediaMetadata();
-                    mediaInfo.metadata.artist = song.artist.name;
-                    mediaInfo.metadata.songName = song.title;
-                    mediaInfo.metadata.title = song.title;
-                    mediaInfo.metadata.images = [new chrome.cast.Image(`https://unacceptableuse.com/petify/album/${song.albumID}`)];
-                    let request = new chrome.cast.media.LoadRequest(mediaInfo);
-                    this.state.castSession.loadMedia(request).then(()=>console.log('Load succeed'), (errorCode)=>console.log('Error code: ' + errorCode));
-
-                    this.stateUpdater = setInterval(()=>{
-                        if(!this.state.castSession)
-                            return clearInterval(this.stateUpdater);
-                        if(this.state.castSession.getMediaSession())
-                            this.setState({elapsed: this.state.castSession.getMediaSession().getEstimatedTime()});
-                        if(this.state.elapsed >= this.state.song.duration-1) //Cast doesnt reach the exact end of the song so fuck it
-                            this.controls.nextTrack();
-                    }, 500); //todo
-                }else{
-                    this._audio.autoplay = true;
-                    this._audio.src = `https://unacceptableuse.com/petify/song/${song.id}`;
-                    this.stateUpdater = setInterval(()=>{
-                        if(this._audio.currentTime % 5 < 1){
-                            this.saveCurrentSong();
-                        }
-                        this.setState({elapsed: this._audio.currentTime})
-                    }, 500);
-                }
-                /*eslint-enable */
-                if ('mediaSession' in navigator) {
-                    /* eslint-disable-next-line */
-                    navigator.mediaSession.metadata = new MediaMetadata({
-                        title: song.title,
-                        artist: song.artist.name,
-                        artwork: [
-                            {src: `http://localhost:3000/api/v2/album/${song.albumID}/image`, sizes: '300x300', type: 'image/png'},
-                        ]
-                    });
-                }
-            },
-            clearQueue: ()=>this.setState({queue:[]}),
-            saveQueue: ()=>null,
-            addToQueue: (song)=>{
-                if (Array.isArray(song))
-                    return song.forEach((s)=>this.controls.addToQueue(s));
-                song.origin = "queue";
-                this.setState(state=>state.queue.push(song));
-            },
-            shuffleToQueue: (song)=>{
-                this.controls.addToQueue(shuffleArray(song));
-            },
-            queueNext: (song)=>{
-                if (Array.isArray(song))
-                    return song.forEach((s)=>this.controls.queueNext(s));
-                song.origin = "queue";
-                this.setState(state=>state.queue.unshift(song));
-            },
-            setIsOpen: (modalIsOpen, returnUrl = this.state.returnUrl)=>this.setState({modalIsOpen, returnUrl}),
-            requestClose: ()=>this.setState({closeRequested: true, modalIsOpen: false}),
-            setCurrentUser: (user)=>{
-                //I hate myself
-                this.setState({user})
-            },
-            setRadio: (radio)=>{
-                this.controls.clearQueue();
-                this.setState({radio, radioIncrement: 2});
-                if(!radio)return;
-                axios.get(`http://localhost:3000/api/v2/radio/${radio.id}/songs`).then((res)=>{
-                    this.controls.shuffleToQueue(res.data);
-                    this.controls.nextTrack();
-                }).catch((error)=>console.error(error));
-            }
-        }
+        this.controls = new DefaultPlayerHandler(this);
     }
 
     saveCurrentSong() {
@@ -273,6 +104,7 @@ export default class Player extends React.Component {
     }
 
     componentDidMount(){
+
         this._audio.onstalled = ()=>this.setState({buffering: true});
 
         this._audio.onplaying = ()=>{
@@ -289,6 +121,53 @@ export default class Player extends React.Component {
                 return state
             })
         });
+
+        function max(num, max, min){
+            if(num > max)return max;
+            if(num < min)return min;
+            return Math.floor(num);
+        }
+        /* eslint-disable*/
+/*        let audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+        let analyser = audioCtx.createAnalyser();
+        let source = audioCtx.createMediaElementSource(this._audio);
+        source.connect(analyser);
+        source.connect(audioCtx.destination);
+        analyser.fftSize = 64;
+        let bufferLength = analyser.frequencyBinCount;
+        let dataArray = new Uint8Array(bufferLength);
+
+        let inter;
+        let socket = new WebSocket("ws://localhost:3002");
+        socket.onopen = ()=>{
+            console.log("Connected!");
+            if(inter)
+                clearInterval(inter);
+            let lowTotal = 0;
+            let midTotal = 0;
+            let highTotal = 0;
+            let count = 0;
+
+            inter = setInterval(()=>{
+                count++;
+                analyser.getByteFrequencyData(dataArray);
+                let lowCount = Math.floor(dataArray.slice(0, 10).reduce((x, y)=>x+y)/10);
+                let midCount = Math.floor(dataArray.slice(10, 20).reduce((x, y)=>x+y)/10);
+                let highCount = max(Math.floor(dataArray.slice(20).reduce((x, y)=>x+y)/10), 254, 0);
+
+                let highest = lowCount;
+                if(midCount > highest)highest = midCount;
+                if(highCount > highest)highest = highCount;
+
+                if(highest === midCount)
+                    socket.send(JSON.stringify([2, 0, 0, highest, 0]));
+                else if(highest === lowCount)
+                    socket.send(JSON.stringify([2, 0, highest, 0, 0]));
+                else
+                    socket.send(JSON.stringify([2, 0, 0, 0, highest]));
+            }, 25);
+        };*/
+        /* eslint-enable*/
 
         if(window.localStorage){
             if(window.localStorage.getItem("queue") != null) {
@@ -312,6 +191,9 @@ export default class Player extends React.Component {
                     this._audio.currentTime = playingData.elapsed;
                     this.controls.playTrack(playingData.song, false, false, true);
                     this.setState({playing: playingData.playing, radio: playingData.radio, radioIncrement: playingData.radioIncrement});
+                    if(playingData.radio){
+                        this.controls.setPlayerHandler(new RadioPlayerHandler(this, playingData.radio, true))
+                    }
                     if(!playingData.playing) {
                         this._audio.pause()
                     }
@@ -340,10 +222,10 @@ export default class Player extends React.Component {
         };
 
         if ('mediaSession' in navigator) {
-            navigator.mediaSession.setActionHandler('play', this.controls.togglePlaying);
-            navigator.mediaSession.setActionHandler('pause', this.controls.togglePlaying);
-            navigator.mediaSession.setActionHandler('previoustrack', this.controls.previousTrack);
-            navigator.mediaSession.setActionHandler('nexttrack', this.controls.nextTrack);
+            navigator.mediaSession.setActionHandler('play', ()=>this.controls.togglePlaying());
+            navigator.mediaSession.setActionHandler('pause', ()=>this.controls.togglePlaying());
+            navigator.mediaSession.setActionHandler('previoustrack', ()=>this.controls.previousTrack());
+            navigator.mediaSession.setActionHandler('nexttrack', ()=>this.controls.nextTrack());
             navigator.mediaSession.setActionHandler('seekbackward', ()=>this.controls.seekTrack(null, this.state.elapsed-10));
             navigator.mediaSession.setActionHandler('seekforward', ()=>this.controls.seekTrack(null, this.state.elapsed+10));
         }
@@ -357,6 +239,7 @@ export default class Player extends React.Component {
                     autoJoinPolicy: chrome.cast.AutoJoinPolicy.ORIGIN_SCOPED
                 });
 
+                let hasConnected = false;
                 cast.framework.CastContext.getInstance().addEventListener(cast.framework.CastContextEventType.CAST_STATE_CHANGED, (data)=>{
                     if(data.castState === cast.framework.CastState.CONNECTED){
                         let castPlayer = new cast.framework.RemotePlayer();
@@ -373,9 +256,16 @@ export default class Player extends React.Component {
                             this.controls.playTrack(this.state.song, false, true);
                             this.controls.seekTrack(null, this._audio.currentTime);
                         }
+                        hasConnected = true;
+
+                        this.controls.setPlayerHandler(new ChromecastPlayerHandler(this));
 
                     }else if(data.castState === cast.framework.CastState.NOT_CONNECTED){
                         this.setState({castSession: null});
+                        if(hasConnected) {
+                            hasConnected = false;
+                            this.controls.setPlayerHandler(new DefaultPlayerHandler(this));
+                        }
                     }
                 })
 

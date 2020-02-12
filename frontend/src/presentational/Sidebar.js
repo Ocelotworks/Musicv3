@@ -104,18 +104,18 @@ export default function(){
                     </div>
                     <div className="sidebarElement" id="trackProgress">
                         {formatTime(player.data.elapsed)}/{formatTime(player.data.song.duration)}
-                        <TrackSlider value={(player.data.elapsed/player.data.song.duration)*100} className={player.data.buffering ? "buffering" : ""} onChange={player.control.seekTrack}/>
+                        <TrackSlider value={(player.data.elapsed/player.data.song.duration)*100} className={player.data.buffering ? "buffering" : ""} onChange={(event, seek)=>player.control.seekTrack(event, seek)}/>
                     </div>
                     <div className="sidebarElement" id="controls">
                         <div id="primaryControls">
-                            <FastRewind onClick={player.control.previousTrack}/>
-                            {player.data.playing ? <Pause onClick={player.control.togglePlaying}/> : <PlayArrow onClick={player.control.togglePlaying}/>}
-                            <FastForward  onClick={player.control.nextTrack}/>
+                            <FastRewind onClick={()=>player.control.previousTrack()}/>
+                            {player.data.playing ? <Pause onClick={()=>player.control.togglePlaying()}/> : <PlayArrow onClick={()=>player.control.togglePlaying()}/>}
+                            <FastForward  onClick={()=>player.control.nextTrack()}/>
                         </div>
                         <div id="secondaryControls">
-                            {player.data.repeat === 1 ? <RepeatOne onClick={player.control.setRepeat} className="enabled"/> : <Repeat className={player.data.repeat > 1 ? "enabled" : ""}  onClick={player.control.setRepeat}/>}
-                            <PlayCircleOutlineOutlined onClick={player.control.toggleAutoplay} className={player.data.autoplay ? "enabled" : ""}/>
-                            <Shuffle onClick={player.control.toggleShuffle} className={player.data.shuffle ? "enabled" : ""}/>
+                            {player.data.repeat === 1 ? <RepeatOne onClick={()=>player.control.setRepeat()} className="enabled"/> : <Repeat className={player.data.repeat > 1 ? "enabled" : ""}  onClick={()=>player.control.setRepeat()}/>}
+                            <PlayCircleOutlineOutlined onClick={()=>player.control.toggleAutoplay()} className={player.data.autoplay ? "enabled" : ""}/>
+                            <Shuffle onClick={()=>player.control.toggleShuffle()} className={player.data.shuffle ? "enabled" : ""}/>
                             <google-cast-launcher/>
                         </div>
                         <Grid container spacing={2}>
@@ -123,7 +123,7 @@ export default function(){
                                 <VolumeDown onClick={()=>player.control.setVolume(null,0)}/>
                             </Grid>
                             <Grid item xs>
-                                <VolumeSlider value={player.data.volume} onChange={player.control.setVolume}/>
+                                <VolumeSlider value={player.data.volume} onChange={(event, volume)=>player.control.setVolume(event, volume)}/>
                             </Grid>
                             <Grid item>
                                 <VolumeUp onClick={()=>player.control.setVolume(null, 100)}/>
@@ -140,7 +140,7 @@ export default function(){
                             <span>{player.data.radio ? 'Queue' : `Queue (${player.data.queue.length})`}</span>
                             <div className={player.data.radio ? "hidden" : ""}>
                                 <PlaylistAdd onClick={player.control.saveQueue}/>
-                                <Delete onClick={player.control.clearQueue}/>
+                                <Delete onClick={()=>player.control.clearQueue()}/>
                             </div>
                         </div>
                         <ContextMenu id='queueContextMenu'>

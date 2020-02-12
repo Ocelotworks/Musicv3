@@ -8,6 +8,8 @@ import {Delete, Edit, PlayArrow, Save, Shuffle} from "@material-ui/icons";
 import StandardLoader from "../../presentational/StandardLoader";
 import Song from "../../presentational/Song";
 import RadioFilter from "../RadioFilter";
+import RadioPlayerHandler from "../../playerHandlers/RadioPlayerHandler";
+import DefaultPlayerHandler from "../../playerHandlers/DefaultPlayerHandler";
 
 /**
  *   ╔════   Copyright 2020 Peter Maguire
@@ -80,7 +82,7 @@ export default class Radio extends React.Component {
                     <div>
                         <h2>{this.state.radio.name}</h2>
                         <h3>{this.state.radio.desc}</h3>
-                        <Button Icon={PlayArrow} text={player.data.radio && player.data.radio.id === this.state.radio.id ? "Stop Listening" : "Start Listening"} onClick={()=>{player.control.setRadio(player.data.radio && player.data.radio.id === this.state.radio.id ? null : this.state.radio)}}/>
+                        <Button Icon={PlayArrow} text={player.data.radio && player.data.radio.id === this.state.radio.id ? "Stop Listening" : "Start Listening"} onClick={()=>{player.control.setPlayerHandler(player.data.radio && player.data.radio.id === this.state.radio.id ? new DefaultPlayerHandler(player.control.getPlayer()) : new RadioPlayerHandler(player.control.getPlayer(), this.state.radio))}}/>
                         {this.state.allowHeaders.includes("PATCH") ? this.state.saving ? <>Saving...</> : <Button Icon={this.state.editing ? Save : Edit} text={this.state.editing ? "Save" : "Edit"} onClick={()=>this.toggleEditing()}/> : ""}
                         {this.state.allowHeaders.includes("DELETE") ? <Button Icon={Delete} text={"Delete"} onClick={()=>{}}/> : ""}
                     </div>
