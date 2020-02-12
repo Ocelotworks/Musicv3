@@ -2,7 +2,6 @@ import User from "./user";
 import {App} from "../app";
 import RadioFilter from "./radioFilter";
 import Song from "./song";
-import {QueryInterface} from "knex";
 
 export default class Radio {
 
@@ -52,6 +51,19 @@ export default class Radio {
         let query = App.getDB().select().from(Song.TABLE).innerJoin("artists", "artists.id", "songs.artist").limit(50).offset(50*(page-1)).options({nestTables: true});
         filters.forEach((filter)=>query = filter.constructQuery(query));
         return (await query).map((obj)=>new Song(obj));
+    }
+
+    asOriginal(){
+        return {
+            id: this.id,
+            owner: this.ownerID,
+            name: this.name,
+            desc: this.desc,
+        };
+    }
+
+    async update(){
+        return (App.getDB().update(this.asOriginal()).into(Radio.TABLE).where({id: this.id}).limit(1))
     }
 
 }

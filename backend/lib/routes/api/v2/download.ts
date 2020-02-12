@@ -1,5 +1,4 @@
 import {Route} from "../../route";
-import Song from "../../../entity/song";
 import Middleware from "../../../middleware/Middleware";
 import QueuedDownload from "../../../entity/queuedDownload";
 

@@ -1,9 +1,11 @@
 import {Route} from "../../route";
 import Song from "../../../entity/song";
 import Middleware from "../../../middleware/Middleware";
-import User from "../../../entity/user";
+import User, {UserLevel} from "../../../entity/user";
 
 import * as passport from "passport";
+import Radio from "../../../entity/radio";
+import Endware from "../../../middleware/Endware";
 
 export default class Users extends Route {
 
@@ -17,6 +19,13 @@ export default class Users extends Route {
 
         this.router.get('/me', Middleware.requireAuthentication, (req, res)=>res.json(res.locals.user));
         this.router.get('/:id', Middleware.getValidEntity(User), (req, res)=>res.json(res.locals.user));
+
+        this.router.options('/me', Middleware.requireAuthentication, Endware.GetOptionsForEntity("loggedInUser", "id", UserLevel.ADMIN));
+        this.router.options('/:id', Middleware.getValidEntity(User, "id", true), Endware.GetOptionsForEntity("loggedInUser", "id", UserLevel.ADMIN));
+
+        this.router.patch('/me',  Middleware.requireAuthentication, Endware.UpdateEntity("user", ["shuffleMode", "showSongInTitle", "debugMode"]));
+        this.router.patch('/:id',  Middleware.getValidEntity(User), Middleware.requireOwner(User, 'id'), Endware.UpdateEntity("user", ["shuffleMode", "showSongInTitle", "debugMode"]));
+
         this.router.get('/:id/songs', Middleware.getValidEntity(User), async (req, res)=>res.json(await Song.getByUser(res.locals.user, req.query.page)));
     }
 

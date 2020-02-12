@@ -1,8 +1,8 @@
 import {Route} from "../../route";
-import Song from "../../../entity/song";
 import Middleware from "../../../middleware/Middleware";
 import Artist from "../../../entity/artist";
-import Album from "../../../entity/album";
+import Playlist from "../../../entity/playlist";
+import Endware from "../../../middleware/Endware";
 
 export default class Artists extends Route {
 
@@ -22,6 +22,8 @@ export default class Artists extends Route {
 
         this.router.get('/:id/albums', Middleware.getValidEntity(Artist), async (req, res)=>res.json(await res.locals.artist.getAlbums()));
         this.router.get('/:id/songs',  Middleware.getValidEntity(Artist), async (req, res)=>res.json(await res.locals.artist.getSongs()));
+
+        this.router.options('/:id', Middleware.getValidEntity(Artist, "id", true), Endware.GetOptionsForEntity("artist"));
     }
 
     getBase(): string {

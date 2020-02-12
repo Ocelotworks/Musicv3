@@ -73,6 +73,29 @@ export default class User {
         await key.insert();
         return key;
     }
+
+
+    asOriginal(){
+        return {
+            id: this.id,
+            authtype: this.authType,
+            authkey: this.authKey,
+            username: this.username,
+            userlevel: this.level,
+            avatar: this.avatar,
+            showSongInTitle: this.showSongInTitle,
+            showSongInUrl: this.showSongInUrl,
+            shuffle: this.shuffle,
+            autoplay: this.autoplay,
+            repeat: this.repeat,
+            shuffleMode: this.shuffleMode,
+            debugMode: this.debugMode,
+        };
+    }
+
+    async update(){
+        return (App.getDB().update(this.asOriginal()).into(User.TABLE).where({id: this.id}).limit(1))
+    }
 }
 
 

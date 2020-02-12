@@ -2,6 +2,8 @@ import {Route} from "../../route";
 import Song from "../../../entity/song";
 import Middleware from "../../../middleware/Middleware";
 import Album from "../../../entity/album";
+import Playlist from "../../../entity/playlist";
+import Endware from "../../../middleware/Endware";
 
 export default class Albums extends Route {
 
@@ -22,6 +24,8 @@ export default class Albums extends Route {
                 .header("Cache-Control", "public, max-age=60000")
                 .redirect('/img/album.png');
         });
+
+        this.router.options('/:id', Middleware.getValidEntity(Album, "id", true), Endware.GetOptionsForEntity("album"));
     }
 
     getBase(): string {

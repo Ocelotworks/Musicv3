@@ -21,3 +21,51 @@
     margin-top: 15px;
     margin-bottom: 15px;
 }
+
+#artistInfo input {
+    background: rgba(0,0,0,0.3);
+    color: white;
+    border: none;
+    border-bottom: 1px solid white;
+    padding: 6px;
+    font-size: inherit;
+}
+
+.radioFilter select {
+    background: rgba(0,0,0,0.3);
+    color: white;
+    border: 1px solid black;
+    font-size: inherit;
+    padding: 5px;
+    margin-top: 5px;
+    margin-bottom: 5px;
+}
+
+.radioFilter input {
+    background: rgba(0,0,0,0.3);
+    color: white;
+    padding: 5px;
+    border: none;
+    border-bottom: 1px solid white;
+    width: 20vw;
+    margin-top: 10px;
+    margin-bottom: 10px;
+    font-size: inherit;
+}
+
+.radioFilter button {
+    background: transparent;
+    border-radius: 0;
+    font-variant: small-caps;
+    border-color: white;
+    outline: none;
+    width: 4vw;
+    padding: 2px 0;
+}
+
+.radioFilter button.include {
+    color: lime;
+    border-color: lime;
+}
+
+.radioFilter button.exclude {border-color: red;color: red;}

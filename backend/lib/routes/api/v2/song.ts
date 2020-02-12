@@ -3,6 +3,7 @@ import Song from "../../../entity/song";
 import Middleware from "../../../middleware/Middleware";
 import Play from "../../../entity/plays";
 import {UserLevel} from "../../../entity/user";
+import Endware from "../../../middleware/Endware";
 
 export default class Songs extends Route {
 
@@ -29,15 +30,8 @@ export default class Songs extends Route {
         });
 
 
-        this.router.options('/:id', Middleware.getValidEntity(Song, "id", true), (req, res)=>{
-            let options = ["OPTIONS", "GET", "HEAD"];
-            if(res.locals.song && res.locals.user && (res.locals.user.level > UserLevel.MODERATOR || res.locals.user.id === res.locals.song.owner.id)){
-               options.push("DELETE", "PATCH")
-            }
-            res.header('Access-Control-Expose-Headers', 'Allow');
-            res.header('Access-Control-Allow-Methods', options.join(", "));
-            res.header("Allow", options.join(", ")).send();
-        });
+        this.router.options('/:id', Middleware.getValidEntity(Song, "id", true), Endware.GetOptionsForEntity("song"));
+
         this.router.delete('/:id', Middleware.getValidEntity(Song), Middleware.requireOwner(Song, "userID"), async (req, res)=>{await res.locals.song.delete(); res.status(204).send()});
 
         this.router.get('/:id/related', Middleware.getValidEntity(Song), async (req, res)=>res.json(await res.locals.song.getRelated()));
