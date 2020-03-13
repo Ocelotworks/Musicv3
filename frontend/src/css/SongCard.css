@@ -21,8 +21,8 @@
     cursor: pointer;
     border: 1px solid black;
     transition: border 0.3s;
-    width: 225px;
-    height: 225px;
+    width: 11vw;
+    height: 11vw;
     background: url('http://localhost:3000/img/album.png');
     background-size: contain;
 }
