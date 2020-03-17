@@ -14,13 +14,18 @@ export default class Users extends Route {
 
         this.router.get('/auth/google/callback', passport.authenticate('google', {failureRedirect: '/login-failed', session: false}), (req, res)=>{
             // @ts-ignore
-            res.redirect(`http://localhost:3000/#!/login/${req.user.id}`)
+            res.redirect(`http://localhost:3001/#/login/${req.user.id}`)
         });
 
         this.router.get('/me', Middleware.requireAuthentication, (req, res)=>res.json(res.locals.user));
         this.router.get('/:id', Middleware.getValidEntity(User), (req, res)=>res.json(res.locals.user));
 
-        this.router.options('/me', Middleware.requireAuthentication, Endware.GetOptionsForEntity("loggedInUser", "id", UserLevel.ADMIN));
+        this.router.get('/me/votes', Middleware.requireAuthentication, async (req, res)=>res.json(await res.locals.user.getVotes()));
+        this.router.get('/:id/votes', Middleware.getValidEntity(User), async (req, res)=>res.json(await res.locals.user.getVotes()));
+
+        this.router.get('/me/session', Middleware.requireAuthentication, async (req, res)=>res.json(await res.locals.user.getSessions()));
+
+        this.router.options('/me', Endware.GetOptionsForEntity("loggedInUser", "id", UserLevel.ADMIN));
         this.router.options('/:id', Middleware.getValidEntity(User, "id", true), Endware.GetOptionsForEntity("loggedInUser", "id", UserLevel.ADMIN));
 
         this.router.patch('/me',  Middleware.requireAuthentication, Endware.UpdateEntity("user", ["shuffleMode", "showSongInTitle", "debugMode"]));

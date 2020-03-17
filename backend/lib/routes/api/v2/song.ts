@@ -29,6 +29,10 @@ export default class Songs extends Route {
             res.status(204).send();
         });
 
+        this.router.put(['/:id/like', '/:id/dislike', '/:id/neutral'], Middleware.requireAuthentication, Middleware.getValidEntity(Song), (req, res)=>{
+            //TODO
+            res.status(501).send();
+        });
 
         this.router.options('/:id', Middleware.getValidEntity(Song, "id", true), Endware.GetOptionsForEntity("song"));
 

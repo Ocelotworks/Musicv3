@@ -22,3 +22,41 @@
 .user.level-100:hover span {
     color: #1ed760;
 }
+
+
+#userInfo h2 {
+    margin-bottom: 0;
+}
+
+#userInfo div {
+    margin-bottom: 11px;
+}
+
+.setting {
+    background: rgba(0,0,0,0.5);
+    padding: 5px;
+    margin-bottom: 5px;
+    position: relative;
+}
+
+.settingTitle {
+    font-size: 24px;
+    font-weight: 500;
+}
+
+span.settingSubtitle {
+    display: block;
+}
+
+.setting input {
+    position: absolute;
+    right: 10px;
+    top: calc(50% - 10px);
+}
+
+div#userSettings {
+    position: relative;
+}
+.setting select {
+    display: block;
+}

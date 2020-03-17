@@ -6,7 +6,7 @@
  */
 import React from 'react';
 import '../css/Header.css'
-import {NavLink} from "react-router-dom";
+import {NavLink, Link} from "react-router-dom";
 import {
     Home,
     LibraryMusic,
@@ -44,7 +44,7 @@ export default function(){
             <div id="topBarUserContainer">
 
                 <input type="text" id="search" placeholder="Search" autoComplete="false"/>
-                {player.data.user ? <User user={player.data.user}/> : <div>Login bitch</div>}
+                {player.data.user ? <User user={player.data.user}/> : <div id="login" className="user"><a href={`http://localhost:3000/api/v2/user/auth/google`}>Login</a></div>}
             </div>
         </div>)}
     </PlayerContext.Consumer>)

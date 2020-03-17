@@ -2,6 +2,7 @@ import {App} from "../app";
 import Song from "./song";
 import apiKey from "./apiKey";
 import ApiKey from "./apiKey";
+import SongVote from "./songVote";
 
 export default class User {
     static TABLE = "users";
@@ -18,6 +19,7 @@ export default class User {
     repeat: boolean;
     shuffleMode: ShuffleMode;
     debugMode: boolean;
+    timestamp: Date;
 
 
     constructor(obj){
@@ -37,6 +39,7 @@ export default class User {
         this.repeat = !!obj.repeat;
         this.shuffleMode = obj.shuffleMode;
         this.debugMode = obj.debugMode;
+        this.timestamp = new Date(obj.timestamp);
     }
 
     static async create(id: String): Promise<User>{
@@ -65,6 +68,12 @@ export default class User {
         return query.map((obj)=>new Song(obj));
     }
 
+
+    async getVotes(): Promise<SongVote[]>{
+        const query = await (App.getDB().select().where({owner: this.id}).from(SongVote.TABLE));
+        return query.map((obj)=>new SongVote(obj));
+    }
+
     async generateSessionKey(): Promise<ApiKey>{
         let key = new ApiKey({
             owner: this.id,
@@ -72,6 +81,11 @@ export default class User {
         });
         await key.insert();
         return key;
+    }
+
+    async getSessions(): Promise<ApiKey[]>{
+        const query = await (App.getDB().select().where({owner: this.id, revoked: 0}).from(ApiKey.TABLE));
+        return query.map((obj)=>new ApiKey(obj));
     }
 
 
