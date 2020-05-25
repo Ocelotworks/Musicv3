@@ -4,6 +4,7 @@ stages:
 
 
 build_frontend:
+  image: node:latest
   only:
     - master
   stage: build
