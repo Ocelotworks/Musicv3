@@ -14,16 +14,17 @@ import {
     PlaylistPlay,
     Link as LinkIcon,
     Edit,
-    Delete
+    Delete as DeleteIcon,
 } from "@material-ui/icons";
 import {Route, Switch} from "react-router";
 import Related from "./song/Related";
+import Delete from "./song/Delete";
 
 const links = [
     {icon: PlaylistPlay, href: "playlists", name: "Playlists"},
     {icon: LinkIcon, href: "related", name: "Related"},
     {icon: Edit, href: "edit", name: "Edit", requireHeader: "PATCH", className: "gold"},
-    {icon: Delete, href: "delete", name: "Delete", requireHeader: "DELETE", className: "red"},
+    {icon: DeleteIcon, href: "delete", name: "Delete", requireHeader: "DELETE", className: "red"},
 ];
 
 
@@ -37,6 +38,7 @@ export default class SongModal extends React.Component {
 
     constructor(props){
         super(props);
+        console.log(props.extraData.controls);
         let id = props.data.id;
         this.currentUrl = `${props.extraData.returnUrl}/modal/song/${id}/`;
 
@@ -80,6 +82,7 @@ export default class SongModal extends React.Component {
             <div id="songModalTabContainer">
                 <Switch>
                     <Route path={`${this.currentUrl}related`} children={<Related song={this.state.song}/>}/>
+                    <Route path={`${this.currentUrl}delete`} children={<Delete song={this.state.song} controls={this.props.extraData.controls}/>}/>
                 </Switch>
             </div>
         </div>);

@@ -43,6 +43,22 @@ export default class User extends React.Component {
         }).catch((error)=>this.setState({error: error.toString()}));
 
 
+        this.handleDelete = this.handleDelete.bind(this);
+    }
+    componentDidMount(){
+        document.addEventListener("petifyDeleteSong", this.handleSongDelete, true, true);
+    }
+
+    componentWillUnmount() {
+        document.removeEventListener("petifyDeleteSong", this.handleSongDelete);
+    }
+
+    handleDelete(event){
+        if(this.state.songs) {
+            this.setState({
+                songs: this.state.songs.filter((song) => song.id !== event.detail.songId)
+            });
+        }
     }
 
     render() {
@@ -68,6 +84,16 @@ export default class User extends React.Component {
                         <option value="RANDOM">Random</option>
                         <option value="FAVOUR_UNHEARD">Favour Unheard</option>
                         <option value="FAVOUR_LIKED">Favour Liked</option>
+                    </select>
+                </div>
+                <div className="setting">
+                    <span className="settingTitle">Recommended Mode</span>
+                    <select value={this.state.user.shuffleMode}>
+                        <option value="RANDOM">Random</option>
+                        <option value="RANDOM_NOT_DISLIKED">Not disliked</option>
+                        <option value="PLAYED">Played</option>
+                        <option value="UNPLAYED">Unplayed</option>
+                        <option value="LIKED">Liked</option>
                     </select>
                 </div>
             </div>;

@@ -21,9 +21,9 @@ export default class HomeController extends React.Component {
     };
 
 
-    loadLatest(offset = 0){
+    loadLatest(offset = 0, count = 6){
         console.log("Loading latest");
-        axios.get(`http://localhost:3000/api/v2/song/latest?offset=${offset}`).then((res)=>{
+        axios.get(`http://localhost:3000/api/v2/song/latest?offset=${offset}&count=${count}`).then((res)=>{
             if(offset) {
                 this.setState((state)=>state.recent.push(...res.data));
             }else{
@@ -32,9 +32,9 @@ export default class HomeController extends React.Component {
         }).catch((error)=>this.setState({error: error.toString()}));
     }
 
-    loadRecommended(offset = 0){
+    loadRecommended(offset = 0, count = 6){
         console.log("Loading recommended");
-        axios.get('http://localhost:3000/api/v2/song/recommended').then((res)=>{
+        axios.get(`http://localhost:3000/api/v2/song/recommended?count=${count}`).then((res)=>{
             if(offset) {
                 this.setState((state)=>state.recommended.push(...res.data));
             }else{
@@ -63,6 +63,26 @@ export default class HomeController extends React.Component {
                 this.loadLatest(newOffset);
             }
         }
+        this.handleSongDelete = this.handleSongDelete.bind(this);
+    }
+
+    componentDidMount(){
+        document.addEventListener("petifyDeleteSong", this.handleSongDelete, true, true);
+    }
+
+    componentWillUnmount() {
+        document.removeEventListener("petifyDeleteSong", this.handleSongDelete);
+    }
+
+    handleSongDelete(event){
+       const songId = event.detail.songId;
+
+       this.setState((state)=>{
+           state.recommended = state.recommended.filter((song)=>song.id !== songId);
+           state.recent = state.recent.filter((song)=>song.id !== songId);
+           return state;
+       });
+       this.loadLatest(this.state.recentOffset);
     }
 
     render() {

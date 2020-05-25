@@ -81,7 +81,7 @@ export default class Song{
         return (await query).map((obj)=>new Song(obj));
     }
 
-    static async getRecommended(user: User): Promise<Song[]>{
+    static async getRecommended(user: User, count: number = 6): Promise<Song[]>{
         let query;
         if(!user) {
             query = App.getDB()
@@ -91,16 +91,16 @@ export default class Song{
                 .innerJoin("artists", "artists.id", "songs.artist")
                 .innerJoin("albums", "albums.id", "songs.album")
                 .whereNotNull("albums.image")
-                .limit(6);
+                .limit(count);
         }else{
             query = App.getDB()
-                .select(App.getDB().raw("songs.*, artists.name AS 'artistName'"))
+                .select(App.getDB().raw("songs.*, artists.name AS 'artistName', (SELECT COUNT(*) FROM plays where plays.song = songs.id) AS totalPlays"))
                 .from(Song.TABLE)
                 .orderByRaw("RAND()")
                 .innerJoin("artists", "artists.id", "songs.artist")
-                .innerJoin("votes", "songs.id", "votes.song")
-                .where({"votes.up": 1, "votes.owner": user.id})
-                .limit(6);
+                //.innerJoin("plays", "songs.id", "plays.song")
+                .having('totalPlays', '>', '0')
+                .limit(count);
         }
 
         return (await query).map((obj)=>new Song(obj));
@@ -170,9 +170,8 @@ export default class Song{
     }
 
     async delete(){
-        let query = App.getDB().delete().from(Song.TABLE).where({id: this.id}).limit(1);
-
-
+        if(this.id == null)return null;
+        return App.getDB().delete().from(Song.TABLE).where({id: this.id}).limit(1);
     }
 
 

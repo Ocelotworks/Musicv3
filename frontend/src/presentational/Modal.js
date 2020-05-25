@@ -27,7 +27,7 @@ const customStyles = {
         border                : '1px solid black'
     }
 };
-export default function ModalContainer({setIsOpen, modalIsOpen, returnUrl, requestClose}){
+export default function ModalContainer({setIsOpen, modalIsOpen, returnUrl, requestClose, controls}){
     function openModal() {
         console.log("Opening modal");
         setIsOpen(true);
@@ -48,7 +48,7 @@ export default function ModalContainer({setIsOpen, modalIsOpen, returnUrl, reque
                 <Switch>
                     <Route path={`${returnUrl}/modal/song/:id`}>
                         <SwitchModal switchModal={openModal} condition={!modalIsOpen}/>
-                        <StupidReact Target={SongModal} props={{returnUrl}}/>
+                        <StupidReact Target={SongModal} props={{returnUrl, controls}}/>
                     </Route>
                     <Route path="*">
                         <SwitchModal switchModal={closeModal}  condition={modalIsOpen}/>

@@ -2,6 +2,7 @@ import * as express from "express";
 import * as bodyParser from "body-parser";
 import * as cors from 'cors';
 import * as Knex from "knex";
+import * as config from 'config';
 import Base from "./routes/base";
 
 export class App {
@@ -39,7 +40,7 @@ export class App {
             console.log(err.stack);
         });
 
-        this.app.listen(3000);
+        this.app.listen(config.get("server.port"));
 
     }
 

@@ -55,6 +55,20 @@ export default class Album extends React.Component {
                 songs: res.data,
             })
         }).catch((error)=>this.setState({error: error.toString()}));
+        this.handleDelete = this.handleDelete.bind(this);
+    }
+    componentDidMount(){
+        document.addEventListener("petifyDeleteSong", this.handleSongDelete, true, true);
+    }
+
+    componentWillUnmount() {
+        document.removeEventListener("petifyDeleteSong", this.handleSongDelete);
+    }
+
+    handleDelete(event){
+        this.setState({
+            songs: this.state.songs.filter((song)=>song.id !== event.detail.songId)
+        });
     }
 
     render() {

@@ -296,7 +296,7 @@ export default class Player extends React.Component {
                     <Route path="/" children={<HomeController/>}/>
                 </Switch>
             </div>
-            <ModalContainer modalIsOpen={this.state.modalIsOpen} setIsOpen={this.controls.setIsOpen} returnUrl={this.state.returnUrl} requestClose={this.controls.requestClose}/>
+            <ModalContainer modalIsOpen={this.state.modalIsOpen} setIsOpen={()=>this.controls.setIsOpen()} returnUrl={this.state.returnUrl} requestClose={()=>this.controls.requestClose()} controls={this.controls}/>
         </PlayerContext.Provider>);
     }
 }

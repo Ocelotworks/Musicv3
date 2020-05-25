@@ -37,7 +37,23 @@ export default class Artist extends React.Component {
             document.title = `${res.data.name} | Petify`;
             this.setState(res.data)
         }).catch((error)=>this.setState({error: error.toString()}));
+        this.handleDelete = this.handleDelete.bind(this);
+    }
 
+    componentDidMount(){
+        document.addEventListener("petifyDeleteSong", this.handleSongDelete, true, true);
+    }
+
+    componentWillUnmount() {
+        document.removeEventListener("petifyDeleteSong", this.handleSongDelete);
+    }
+
+    handleDelete(event){
+        if(this.state.songs){
+            this.setState({
+                songs: this.state.songs.filter((song)=>song.id !== event.detail.songId)
+            });
+        }
     }
 
     render() {

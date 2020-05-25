@@ -5,8 +5,8 @@
   "main": "index.js",
   "scripts": {
     "build": "tsc",
-    "dev": "ts-node ./lib/server.ts",
-    "start": "./dist/server.js",
+    "dev": "ts-node ./lib/app.ts",
+    "start": "./dist/app.js",
     "prod": "npm run build && npm run start"
   },
   "keywords": [],
@@ -17,9 +17,12 @@
     "source-map-support": "^0.5.16"
   },
   "dependencies": {
-    "aubio": "^0.1.0",
+    "body-parser": "^1.19.0",
     "config": "^3.2.5",
     "cors": "latest",
+    "express": "^4.17.1",
+    "knex": "^0.20.13",
+    "mysql": "^2.18.1",
     "passport": "^0.4.1",
     "passport-google-oauth20": "^2.0.0",
     "short-uuid": "^3.1.1",
