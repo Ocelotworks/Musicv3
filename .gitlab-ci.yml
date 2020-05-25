@@ -1,0 +1,29 @@
+stages:
+  - build
+  - upload
+
+
+build_frontend:
+  only:
+    - master
+  stage: build
+  cache:
+    paths:
+      - node_modules/
+  artifacts:
+    paths:
+      - build/
+  script:
+    - npm install
+    - npm run build
+
+
+upload_frontend:
+  stage: upload
+  tags: ['ssh-jupiter']
+  only:
+    - master
+  script:
+    - rm -r /home/www-data/unacceptableuse.com/newpetify/*
+    - ls
+    - mv $CIR_PROJECT_DIR/build/* /home/www-data/unacceptableuse.com/newpetify
